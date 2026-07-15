@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsOfficeApi.OpenXml_Impl._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsOfficeApi.OpenXml_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL._netF\ExploreTheWorld.CL._netF.csproj" />
+    <ProjectReference Include="..\DL._netF\ExploreTheWorld.DL._netF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- PNG conversion in the JSON writers (System.Drawing.Common on net10.0). -->
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\DL.MsOfficeApi.OpenXml_Impl\**\*.cs">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="..\DL.MsOfficeApi.OpenXml_Impl\obj\**" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+</Project>

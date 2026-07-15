@@ -1,0 +1,85 @@
+@namespace JBC.ExploreTheWorld.AL.Oqtane.Theme
+@inherits ThemeBase
+@inject ISettingService SettingService
+
+@* Oqtane has no HeadOutlet, so <HeadContent> is never rendered. The baseline Radzen
+   stylesheet is declared in Resources (Oqtane's resource pipeline); a non-default
+   RadzenCss site setting is applied via AddHeadContent in OnParametersSet, which
+   renders after the page resources and therefore wins the cascade. *@
+
+<RadzenLayout>
+    <RadzenHeader>
+        <RadzenStack Style="width:100%;"
+                     Orientation="Orientation.Horizontal"
+                     AlignItems="AlignItems.Center"
+                     Gap="0.5rem"
+                     Class="rz-p-2">
+            @* Toggle handled by theme.js (see ThemeInfo Resources) — the theme renders
+               statically in Oqtane's Static render mode, so @onclick would never fire. *@
+            <RadzenSidebarToggle />
+            <Logo UseSiteNameAsFallback="true" />
+            <span style="flex:1;"></span>
+            <Search />
+            <UserProfile ShowRegister="@_register" />
+            <Login ShowLogin="@_login" />
+            <ControlPanel LanguageDropdownAlignment="right" />
+        </RadzenStack>
+    </RadzenHeader>
+    @* Responsive=false renders the rz-sidebar-expanded class that theme.js toggles;
+       responsive mode never applies the expanded/collapsed classes. *@
+    <RadzenSidebar Expanded="true"
+                   Responsive="false">
+        <SidebarMenu />
+    </RadzenSidebar>
+    <RadzenBody>
+        <RadzenStack Class="rz-p-3"
+                     Orientation="Orientation.Vertical"
+                     Gap="1rem">
+            <Pane Name="@PaneNames.Default" />
+            <Pane Name="@PaneNames.Admin" />
+            <footer class="rz-text-align-center">
+                <Pane Name="Footer" />
+            </footer>
+        </RadzenStack>
+    </RadzenBody>
+</RadzenLayout>
+
+<RadzenComponents />
+<CookieConsent />
+
+@code {
+    public override string Name => "Default Layout";
+    public override string Panes => PaneNames.Default + "," + PaneNames.Admin + ",Footer";
+
+    // Evaluated via Activator.CreateInstance during page composition (no PageState),
+    // so this list must be static. It guarantees Radzen styling on every themed page.
+    public override List<Resource> Resources => new List<Resource>
+    {
+        new Stylesheet("_content/Radzen.Blazor/css/default.css")
+    };
+
+    private string _radzenCss = "default.css";
+    private bool _login = true;
+    private bool _register = true;
+
+    protected override void OnParametersSet()
+    {
+        var settings = SettingService.MergeSettings(PageState.Site.Settings, PageState.Page.Settings);
+        var ns = GetType().Namespace!;
+        _radzenCss = SettingService.GetSetting(settings, ns + ":RadzenCss", "default.css");
+        // Normalize legacy "-base" values saved before the switch to the complete theme files.
+        _radzenCss = _radzenCss.Replace("-base.css", ".css");
+        if (_radzenCss != "default.css")
+        {
+            AddHeadContent("<link id=\"radzen-theme-css\" rel=\"stylesheet\" href=\"_content/Radzen.Blazor/css/" + _radzenCss + "\" />");
+        }
+        if (!bool.TryParse(SettingService.GetSetting(settings, ns + ":Login", "true"), out _login))
+        {
+            _login = true;
+        }
+        if (!bool.TryParse(SettingService.GetSetting(settings, ns + ":Register", "true"), out _register))
+        {
+            _register = true;
+        }
+    }
+}

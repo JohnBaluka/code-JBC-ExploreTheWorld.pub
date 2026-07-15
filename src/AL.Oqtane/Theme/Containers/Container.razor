@@ -1,0 +1,23 @@
+@namespace JBC.ExploreTheWorld.AL.Oqtane.Theme
+@inherits ContainerBase
+
+<div class="@_classes">
+    @if (_showTitle && ModuleState.Title != "-")
+    {
+        <div class="d-flex align-items-center mb-2">
+            <ModuleActions /><h5 class="mb-0"><ModuleTitle /></h5>
+        </div>
+    }
+    else
+    {
+        <ModuleActions />
+    }
+    <ModuleInstance />
+</div>
+
+@code {
+    public override string Name => "Default Container";
+
+    private bool _showTitle = true;
+    private string _classes = "";
+}

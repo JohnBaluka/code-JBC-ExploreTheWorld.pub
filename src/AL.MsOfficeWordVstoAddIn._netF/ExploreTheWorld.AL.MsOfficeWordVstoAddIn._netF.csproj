@@ -1,0 +1,101 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <OutputType>Library</OutputType>
+    <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants);MSOFFICE_ADDIN</DefineConstants>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="NetOfficeFw.Core" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Excel" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Word" Version="1.9.10" />
+    <PackageReference Include="System.Net.Http.Json" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AL.WinFormsLib._netF\ExploreTheWorld.AL.WinFormsLib._netF.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi_Impl._netF\ExploreTheWorld.DL.MsOfficeApi_Impl._netF.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData._netF\ExploreTheWorld.DL.CountriesNowSpaceData._netF.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.SqliteDb_Impl._netF\ExploreTheWorld.DL.CountriesNowSpaceData.SqliteDb_Impl._netF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="RibbonUI.xml" />
+  </ItemGroup>
+
+
+  <Target Name="RegisterComAddin" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{E4D5E6F7-B8C9-4A12-DEF0-123456789012}&quot; /ve /d &quot;JBC ETW Word Watcher&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{E4D5E6F7-B8C9-4A12-DEF0-123456789012}\InprocServer32&quot; /ve /d mscoree.dll /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{E4D5E6F7-B8C9-4A12-DEF0-123456789012}\InprocServer32&quot; /v Class /d JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn.Addin /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{E4D5E6F7-B8C9-4A12-DEF0-123456789012}\InprocServer32&quot; /v Assembly /d &quot;$(AssemblyName), Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{E4D5E6F7-B8C9-4A12-DEF0-123456789012}\InprocServer32&quot; /v RuntimeVersion /d v4.0.30319 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{E4D5E6F7-B8C9-4A12-DEF0-123456789012}\InprocServer32&quot; /v ThreadingModel /d Both /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{E4D5E6F7-B8C9-4A12-DEF0-123456789012}\InprocServer32&quot; /v CodeBase /d &quot;$(TargetPath)&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn._netF.Addin&quot; /ve /d &quot;JBC ETW Word Watcher&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn._netF.Addin\CLSID&quot; /ve /d &quot;{E4D5E6F7-B8C9-4A12-DEF0-123456789012}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\Word\Addins\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn._netF.Addin&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\Word\Addins\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn._netF.Addin&quot; /v FriendlyName /d &quot;JBC ETW Word Watcher&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\Word\Addins\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn._netF.Addin&quot; /v Description /d &quot;ExploreTheWorld Word event watcher&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Watcher UserControl COM registration (required for ICTPFactory.CreateCTP).
+         The control lives in AL.WinFormsLib._netF (namespace JBC.ExploreTheWorld.AL.WinFormsLib);
+         CLSID matches its [Guid], and Class/Assembly/CodeBase point at that library, not this add-in. -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}&quot; /ve /d &quot;ETW Word Watcher UC&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\InprocServer32&quot; /ve /d mscoree.dll /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\InprocServer32&quot; /v Class /d JBC.ExploreTheWorld.AL.WinFormsLib.MsWord_Watcher_UserControl /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\InprocServer32&quot; /v Assembly /d &quot;JBC.ExploreTheWorld.AL.WinFormsLib._netF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\InprocServer32&quot; /v RuntimeVersion /d v4.0.30319 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\InprocServer32&quot; /v ThreadingModel /d Both /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\InprocServer32&quot; /v CodeBase /d &quot;$(TargetDir)JBC.ExploreTheWorld.AL.WinFormsLib._netF.dll&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.WinFormsLib.MsWord_Watcher_UserControl&quot; /ve /d &quot;ETW Word Watcher UC&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.WinFormsLib.MsWord_Watcher_UserControl\CLSID&quot; /ve /d &quot;{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Mark the Watcher control SafeForScripting + SafeForInitializing so the Office ActiveX host accepts it as CTP content. -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\Implemented Categories\{7DD95802-9882-11CF-9FA9-00AA006C42C4}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Register as an ActiveX Control (Control subkey + MiscStatus) so the Office CTP host builds an in-place window; regasm writes these, the hand-rolled registration omitted them (pane was created + Visible=true but never rendered). -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\Control&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\MiscStatus&quot; /ve /d 0 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}\MiscStatus\1&quot; /ve /d 131473 /f" ContinueOnError="WarnAndContinue" />
+    <!-- Remove stale registration from when the control lived in this add-in project. -->
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\CLSID\{D1C2B3A4-E5F6-4789-8ABC-DEF012345670}&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn.MsWord_Watcher_UserControl&quot; /f" ContinueOnError="true" />
+    <!-- CountriesNow TaskPane UserControl COM registration -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}&quot; /ve /d &quot;ETW Countries API Pane&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\InprocServer32&quot; /ve /d mscoree.dll /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\InprocServer32&quot; /v Class /d JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn.CountriesNow_TaskPane_UserControl /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\InprocServer32&quot; /v Assembly /d &quot;$(AssemblyName), Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\InprocServer32&quot; /v RuntimeVersion /d v4.0.30319 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\InprocServer32&quot; /v ThreadingModel /d Both /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\InprocServer32&quot; /v CodeBase /d &quot;$(TargetPath)&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn.CountriesNow_TaskPane_UserControl&quot; /ve /d &quot;ETW Countries API Pane&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn.CountriesNow_TaskPane_UserControl\CLSID&quot; /ve /d &quot;{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Mark the Countries API pane SafeForScripting + SafeForInitializing so the Office ActiveX host accepts it as CTP content. -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\Implemented Categories\{7DD95802-9882-11CF-9FA9-00AA006C42C4}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Register as an ActiveX Control (Control subkey + MiscStatus) so the Office CTP host builds an in-place window; regasm writes these, the hand-rolled registration omitted them (pane was created + Visible=true but never rendered). -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\Control&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\MiscStatus&quot; /ve /d 0 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}\MiscStatus\1&quot; /ve /d 131473 /f" ContinueOnError="WarnAndContinue" />
+  </Target>
+  <Target Name="UnregisterComAddin" AfterTargets="Clean" Condition=" '$(Configuration)' == 'Debug' ">
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\CLSID\{E4D5E6F7-B8C9-4A12-DEF0-123456789012}&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn._netF.Addin&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Microsoft\Office\Word\Addins\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn._netF.Addin&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456702}&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.WinFormsLib.MsWord_Watcher_UserControl&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\CLSID\{C1D2E3F4-A5B6-7890-ABCD-EF0123456710}&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeWordVstoAddIn.CountriesNow_TaskPane_UserControl&quot; /f" ContinueOnError="true" />
+  </Target>
+</Project>

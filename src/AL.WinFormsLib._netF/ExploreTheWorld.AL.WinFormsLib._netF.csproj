@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>JBC.ExploreTheWorld.AL.WinFormsLib._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.AL.WinFormsLib</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="NetOfficeFw.Core" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Excel" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Word" Version="1.9.10" />
+    <PackageReference Include="System.Net.Http.Json" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL._netF\ExploreTheWorld.CL._netF.csproj" />
+    <ProjectReference Include="..\DL._netF\ExploreTheWorld.DL._netF.csproj" />
+    <ProjectReference Include="..\BL._netF\ExploreTheWorld.BL._netF.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceApi._netF\ExploreTheWorld.DL.CountriesNowSpaceApi._netF.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData._netF\ExploreTheWorld.DL.CountriesNowSpaceData._netF.csproj" />
+  </ItemGroup>
+
+  <!-- LINK portable export and watcher helper files from AL.WinFormsLib (shared-link compilation pattern) -->
+  <ItemGroup>
+    <Compile Include="..\AL.WinFormsLib\_Export\ExportLog_Form.cs" Link="_Export\ExportLog_Form.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Export\ExportLog_Form.Designer.cs" Link="_Export\ExportLog_Form.Designer.cs" />
+    <EmbeddedResource Include="..\AL.WinFormsLib\_Export\ExportLog_Form.resx" Link="_Export\ExportLog_Form.resx" />
+    <Compile Include="..\AL.WinFormsLib\_Export\ExportMenuHelper.cs" Link="_Export\ExportMenuHelper.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Export\ExportMethod_Enum.cs" Link="_Export\ExportMethod_Enum.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Export\ExportType_Enum.cs" Link="_Export\ExportType_Enum.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Export\JsonWriteMethod_Enum.cs" Link="_Export\JsonWriteMethod_Enum.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Watcher\MsOfficeEvent_Record.cs" Link="_Watcher\MsOfficeEvent_Record.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Watcher\MsOfficeEvents_Repo.cs" Link="_Watcher\MsOfficeEvents_Repo.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Services\MsOfficeExportRepoFactoryProvider.cs" Link="_Services\MsOfficeExportRepoFactoryProvider.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Watcher\MsOfficeSaveAsJsonWriterProvider.cs" Link="_Watcher\MsOfficeSaveAsJsonWriterProvider.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Watcher\WatcherComHelper.cs" Link="_Watcher\WatcherComHelper.cs" />
+  </ItemGroup>
+</Project>

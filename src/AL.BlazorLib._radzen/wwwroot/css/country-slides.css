@@ -1,0 +1,125 @@
+/* ── Country Slides (reveal.js) ───────────────────────────────────────────
+   Styles for CountrySlides__Component. Kept separate from app.css so hosts
+   that embed the component in an existing site (Oqtane module) can load these
+   rules without the app-shell globals in app.css. app.css @imports this file. */
+
+/* Intermediate container — pixel dimensions set by resizeLayout() in JS to
+   maintain the 1280×720 aspect ratio inside the wrapper. */
+.etw-slide-container {
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+/* Reveal.js host element — fills the JS-sized container */
+.etw-reveal {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Outer wrapper measured by JS to derive available space */
+.etw-slides-wrapper {
+    position: relative;
+}
+
+/* Toolbar at top of the slides page */
+.etw-slides-toolbar {
+    padding: 0.5rem 0.75rem 0.75rem;
+}
+
+/* Thin country jump-bar at the bottom */
+.etw-slides-jumpbar {
+    border-top: 1px solid var(--rz-border-disabled-color, #e0e0e0);
+    padding: 0.35rem 0.75rem;
+}
+
+/* ── Slide content ─────────────────────────────────────────────────────────── */
+
+.etw-country-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.etw-slide-flag {
+    font-size: clamp(3rem, 10vw, 7rem);
+    line-height: 1;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+}
+
+/* Real flag image (locally cached PNG) shown instead of the emoji fallback */
+.etw-slide-flag-img {
+    height: 1em;
+    width: auto;
+    max-width: 2em;
+    vertical-align: baseline;
+    border-radius: 0.04em;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.etw-slide-name {
+    font-size: clamp(1.6rem, 4vw, 3rem) !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    text-transform: none !important;
+    margin: 0 !important;
+    letter-spacing: 0.02em;
+}
+
+.etw-slide-codes {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.etw-iso-badge {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.25rem 0.9rem;
+    border-radius: 2rem;
+    font-family: var(--rz-font-mono, 'Consolas', monospace);
+    font-size: clamp(0.9rem, 2vw, 1.3rem);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
+/* Ensure reveal controls sit above our jump-bar */
+.reveal .controls {
+    bottom: 2rem !important;
+}
+
+/* Prevent the reveal progress bar from overlapping the jump-bar */
+.reveal .progress {
+    bottom: 0 !important;
+    z-index: 10;
+}
+
+/* ── Notes: bottom position ────────────────────────────────────────────────── */
+
+/* Constrain the slide area to leave room for notes below */
+.reveal.show-notes.etw-notes-bottom {
+    max-height: 65% !important;
+    max-width: none !important;
+    overflow: visible !important;
+}
+
+/* Reposition notes panel to sit below the slide area */
+.reveal.show-notes.etw-notes-bottom .speaker-notes {
+    position: absolute;
+    top: 100% !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 80px;
+    max-height: 35vh;
+    overflow-y: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-left: none !important;
+    box-sizing: border-box;
+}

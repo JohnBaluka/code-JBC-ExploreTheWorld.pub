@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyName>JBC.ExploreTheWorld.WinFormAppTests</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.WinFormAppTests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="FluentAssertions" Version="8.10.0" />
+    <PackageReference Include="coverlet.collector" Version="10.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="FlaUI.Core" Version="5.0.0" />
+    <PackageReference Include="FlaUI.UIA3" Version="5.0.0" />
+  </ItemGroup>
+
+  <!-- The JSON writer comparison tests call the DL "Save as JSON" writers directly
+       (same paths the WinFormApp watcher forms use). -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\DL\ExploreTheWorld.DL.csproj" />
+    <ProjectReference Include="..\..\DL.MsOfficeApi.Dynamic_Impl\ExploreTheWorld.DL.MsOfficeApi.Dynamic_Impl.csproj" />
+    <ProjectReference Include="..\..\DL.MsOfficeApi.NetOffice_Impl\ExploreTheWorld.DL.MsOfficeApi.NetOffice_Impl.csproj" />
+    <ProjectReference Include="..\..\DL.MsOfficeApi.OpenXml_Impl\ExploreTheWorld.DL.MsOfficeApi.OpenXml_Impl.csproj" />
+  </ItemGroup>
+
+</Project>

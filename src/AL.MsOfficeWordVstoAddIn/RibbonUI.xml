@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="CustomUI_OnLoad">
+  <ribbon>
+    <tabs>
+      <tab id="ETW_Tools" label="ETW (VSTO)">
+        <group id="etw_CountriesNowGroup" label="Countries API">
+          <button id="etw_OpenCountriesNowBlazorForm"
+                  label="Countries Form (Blazor)"
+                  imageMso="ViewsFormView"
+                  size="large"
+                  onAction="OnOpenCountriesNowBlazorForm" />
+        </group>
+        <group id="etw_WatcherGroup" label="Watcher">
+          <button id="etw_OpenWatcherBlazorForm"
+                  label="Watcher Form (Blazor)"
+                  imageMso="ReviewReviewingPaneVertical"
+                  size="large"
+                  onAction="OnOpenWatcherBlazorForm" />
+        </group>
+        <group id="etw_JsonGroup" label="Export">
+          <button id="etw_SaveAsJson"
+                  label="Save as JSON"
+                  imageMso="FileSaveAs"
+                  size="large"
+                  onAction="OnSaveAsJson" />
+          <button id="etw_SaveAsJsonVba"
+                  label="Save as JSON (Direct)"
+                  imageMso="FileSaveAs"
+                  size="large"
+                  onAction="OnSaveAsJsonVba" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

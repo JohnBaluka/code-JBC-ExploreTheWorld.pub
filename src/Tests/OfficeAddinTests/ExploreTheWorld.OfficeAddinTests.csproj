@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyName>JBC.ExploreTheWorld.OfficeAddinTests</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.OfficeAddinTests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="FluentAssertions" Version="8.10.0" />
+    <PackageReference Include="coverlet.collector" Version="10.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="FlaUI.Core" Version="5.0.0" />
+    <PackageReference Include="FlaUI.UIA3" Version="5.0.0" />
+  </ItemGroup>
+
+  <!--
+    NetOffice__10 project references (net10.0 pattern — mirrors AL.WinFormApp).
+    Use NetOfficeFw.* NuGet packages in ._netF projects only.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\NetOffice\NetOffice.csproj" />
+    <ProjectReference Include="..\..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Office\OfficeApi.csproj" />
+    <ProjectReference Include="..\..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Word\WordApi.csproj" />
+    <ProjectReference Include="..\..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Excel\ExcelApi.csproj" />
+    <ProjectReference Include="..\..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\PowerPoint\PowerPointApi.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [ "ES2022", "DOM" ],
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "removeComments": false,
+    "noEmitOnError": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "types": [
+      "office-js-preview"
+    ]
+  },
+  "include": [
+    "Pages/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}

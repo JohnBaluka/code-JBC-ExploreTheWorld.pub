@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../PowerPointWebAddIn1Web/PowerPointWebAddIn1Web.csproj" />
+  <Project Path="PowerPointWebAddIn1.csproj">
+    <Deploy />
+  </Project>
+</Solution>

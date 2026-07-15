@@ -1,0 +1,24 @@
+@page "/"
+@namespace JBC.ExploreTheWorld.AL.BlazorLib
+
+@* Title bar is supplied by Main_Layout (Layout_AppService.AppTitle = host project name). *@
+
+<RadzenStack Orientation="Orientation.Vertical"
+             Gap="1rem"
+             Class="p-4">
+    <RadzenText TextStyle="TextStyle.H4">Explore the World</RadzenText>
+    <RadzenText TextStyle="TextStyle.Body1">
+        A demonstration application showing multiple ways to integrate with the
+        <a href="https://countriesnow.space"
+           target="_blank">
+           countriesnow.space
+        </a> REST API
+        and export data to Microsoft Office formats.
+    </RadzenText>
+    <RadzenStack Orientation="Orientation.Vertical"
+                 Gap="0.5rem">
+        <RadzenText TextStyle="TextStyle.Subtitle1">Available pages:</RadzenText>
+        <RadzenLink Path="/countries-now"
+                    Text="Countries Now — browse countries and export to Word / Excel / PowerPoint" />
+    </RadzenStack>
+</RadzenStack>

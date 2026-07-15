@@ -1,0 +1,319 @@
+@inherits Base__RadzenComponent
+@namespace JBC.ExploreTheWorld.AL.BlazorLib.Countries
+
+@* reveal.js CSS is injected by RevealJs__Interop while the slideshow is active,
+   so the slides work in hosts without a HeadOutlet (BlazorWebView, Oqtane). *@
+
+@if (!Visible) return;
+
+<div id="@GetId()"
+     class="@GetCssClass()"
+     style="@GetHiddenStyle()"
+     @ref="@Element"
+     @attributes="Attributes">
+    <ErrorBoundary>
+        <ChildContent>
+
+            @if (_isLoading)
+            {
+                <RadzenStack style="height:100%;"
+                             Orientation="Orientation.Vertical"
+                             AlignItems="AlignItems.Center"
+                             JustifyContent="JustifyContent.Center"
+                             Gap="1.5rem">
+                    <RadzenProgressBar Style="width:300px"
+                                       Value="100"
+                                       ShowValue="false"
+                                       Mode="ProgressBarMode.Indeterminate" />
+                    <RadzenText Style="color:var(--rz-text-secondary-color)"
+                                TextStyle="TextStyle.Body1">
+                        Loading countries…
+                    </RadzenText>
+                </RadzenStack>
+            }
+            else if (_errorMessage != null)
+            {
+                <RadzenStack Class="p-4"
+                             Gap="1rem">
+                    <RadzenAlert AlertStyle="AlertStyle.Danger"
+                                 AllowClose="false">
+                                 @_errorMessage
+                    </RadzenAlert>
+                </RadzenStack>
+            }
+            else
+            {
+                <RadzenStack style="height:100%;overflow:hidden;"
+                             Orientation="Orientation.Vertical"
+                             Gap="0">
+
+                    @* ── Toolbar ────────────────────────────────────────────────── *@
+                    <RadzenCard class="etw-slides-toolbar"
+                                Style="flex-shrink:0;border-radius:0;border-left:none;border-right:none;border-top:none;">
+                        <RadzenStack Style="flex-wrap:wrap;"
+                                     Orientation="Orientation.Horizontal"
+                                     AlignItems="AlignItems.Center"
+                                     Gap="0.5rem">
+
+                            @* Title + count *@
+                            <RadzenText Style="margin:0;white-space:nowrap"
+                                        TextStyle="TextStyle.H6">
+                                🌍 Country Slides
+                            </RadzenText>
+                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary"
+                                         Text="@($"{_countries.Count} countries")" />
+
+                            <span style="width:1px;height:24px;background:var(--rz-border-color,#dee2e6);flex-shrink:0;display:inline-block;"></span>
+
+                            @* Theme *@
+                            <RadzenLabel Style="font-size:0.8rem;white-space:nowrap"
+                                         Text="Theme" />
+                            <RadzenDropDown Style="width:110px;font-size:0.85rem"
+                                            Data="@Themes"
+                                            TextProperty="Label"
+                                            ValueProperty="Value"
+                                            Value="@_selectedTheme"
+                                            Change="OnThemeChangedAsync" />
+
+                            @* Transition *@
+                            <RadzenLabel Style="font-size:0.8rem;white-space:nowrap"
+                                         Text="Transition" />
+                            <RadzenDropDown Style="width:100px;font-size:0.85rem"
+                                            Data="@Transitions"
+                                            Value="@_selectedTransition"
+                                            Change="OnTransitionChangedAsync" />
+
+                            <span style="width:1px;height:24px;background:var(--rz-border-color,#dee2e6);flex-shrink:0;display:inline-block;"></span>
+
+                            @* Navigation *@
+                            <RadzenButton title="Previous slide (←)"
+                                          Icon="arrow_back"
+                                          Click="NavPrevAsync"
+                                          ButtonStyle="ButtonStyle.Light"
+                                          Size="ButtonSize.Small" />
+
+                            <RadzenText Style="min-width:70px;text-align:center;font-size:0.9rem;font-variant-numeric:tabular-nums">
+                                @SlideLabel
+                            </RadzenText>
+
+                            <RadzenButton title="Next slide (→)"
+                                          Icon="arrow_forward"
+                                          Click="NavNextAsync"
+                                          ButtonStyle="ButtonStyle.Light"
+                                          Size="ButtonSize.Small" />
+
+                            <span style="width:1px;height:24px;background:var(--rz-border-color,#dee2e6);flex-shrink:0;display:inline-block;"></span>
+
+                            @* Auto-play *@
+                            <RadzenDropDown title="Auto-play speed"
+                                            Style="width:80px;font-size:0.85rem"
+                                            Data="@AutoPlaySpeeds"
+                                            TextProperty="Label"
+                                            ValueProperty="IntervalMs"
+                                            Value="@_autoPlayInterval"
+                                            Change="OnAutoPlaySpeedChangedAsync" />
+                            <RadzenButton title="@(_isAutoPlaying ? "Pause auto-play" : "Start auto-play")"
+                                          Icon="@(_isAutoPlaying ? "pause_circle" : "play_circle")"
+                                          Click="ToggleAutoPlayAsync"
+                                          ButtonStyle="@(_isAutoPlaying ? ButtonStyle.Warning : ButtonStyle.Success)"
+                                          Size="ButtonSize.Small" />
+
+                            <span style="width:1px;height:24px;background:var(--rz-border-color,#dee2e6);flex-shrink:0;display:inline-block;"></span>
+
+                            @* Extras *@
+                            <RadzenButton title="Toggle overview (O)"
+                                          Icon="@(_isOverview ? "grid_off" : "grid_view")"
+                                          Click="ToggleOverviewAsync"
+                                          ButtonStyle="ButtonStyle.Light"
+                                          Size="ButtonSize.Small" />
+
+                            <RadzenButton title="Toggle slide numbers"
+                                          Icon="@(_showSlideNumbers ? "tag" : "label_off")"
+                                          Click="ToggleSlideNumbersAsync"
+                                          ButtonStyle="ButtonStyle.Light"
+                                          Size="ButtonSize.Small" />
+
+                            <RadzenButton title="@NotesTitle"
+                                          Icon="@NotesIcon"
+                                          Click="CycleNotesPositionAsync"
+                                          ButtonStyle="@(_notesPosition != "hidden" ? ButtonStyle.Info : ButtonStyle.Light)"
+                                          Size="ButtonSize.Small" />
+
+                            <RadzenButton title="@(_searchVisible ? "Close search" : "Search slides (Ctrl+Shift+F)")"
+                                          Icon="@(_searchVisible ? "search_off" : "search")"
+                                          Click="ToggleSearchAsync"
+                                          ButtonStyle="@(_searchVisible ? ButtonStyle.Info : ButtonStyle.Light)"
+                                          Size="ButtonSize.Small" />
+
+                            <RadzenButton title="Toggle fullscreen (F)"
+                                          Icon="@(_isFullscreen ? "fullscreen_exit" : "fullscreen")"
+                                          Click="ToggleFullscreenAsync"
+                                          ButtonStyle="ButtonStyle.Light"
+                                          Size="ButtonSize.Small" />
+
+                        </RadzenStack>
+
+                        @* Progress bar *@
+                        <RadzenProgressBar Style="height:3px;margin-top:6px;margin-bottom:-6px"
+                                           Value="@SlideProgress"
+                                           ShowValue="false" />
+                    </RadzenCard>
+
+                    @* ── Reveal.js wrapper ────────────────────────────────────────── *@
+                    @* JS measures this wrapper and sets pixel dimensions on etw-slide-container *@
+                    <div class="etw-slides-wrapper"
+                         style="flex:1;min-height:0;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;"
+                         @ref="_wrapperEl">
+
+                        @if (IsInteractiveHost)
+                        {
+                        @* Pixel dimensions applied by resizeLayout() in reveal-interop.js *@
+                        <div class="etw-slide-container">
+
+                        <div class="reveal etw-reveal"
+                             @ref="_revealEl">
+                            <div class="slides">
+
+                                @* ── Title slide ────────────────────────────────── *@
+                                <section data-background-gradient="linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)"
+                                         data-transition="zoom">
+                                    <h1 style="font-size:6rem;line-height:1;margin:0 0 1.5rem">🌍</h1>
+                                    <h2>Explore the World</h2>
+                                    <p style="color:rgba(255,255,255,0.65)">
+                                        @_countries.Count countries &nbsp;·&nbsp; countriesnow.space
+                                    </p>
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.7em;margin-top:2rem">
+                                        ← → navigate &nbsp; Space = next &nbsp; O = overview &nbsp; F = fullscreen &nbsp; ? = help
+                                    </p>
+                                    <aside class="notes">
+                                        Welcome! This presentation shows all @_countries.Count countries from the CountriesNow Api.
+                                        Use arrow keys, space, or swipe to navigate.
+                                    </aside>
+                                </section>
+
+                                @* ── Country slides ──────────────────────────────── *@
+                                @foreach (var country in _countries)
+                                {
+                                    var flag = GetFlagEmoji(country.Iso2);
+                                    var bg   = GetSlideBackground(country.Iso2);
+
+                                    <section data-background-color="@bg"
+                                             data-auto-animate
+                                             data-auto-animate-duration="0.4">
+                                        <div class="etw-country-slide">
+                                            <div class="etw-slide-flag"
+                                                 data-id="flag">
+                                                @if (GetFlagImageSrc(country.Iso2) is string flagSrc)
+                                                {
+                                                    <img class="etw-slide-flag-img"
+                                                         src="@flagSrc"
+                                                         alt="@($"{country.Country} flag")" />
+                                                }
+                                                else
+                                                {
+                                                    @flag
+                                                }
+                                            </div>
+                                            <h2 class="etw-slide-name"
+                                                data-id="name">@country.Country</h2>
+                                            <div class="etw-slide-codes"
+                                                 data-id="codes">
+                                                @if (!string.IsNullOrEmpty(country.Iso2))
+                                                {
+                                                    <span class="etw-iso-badge">@country.Iso2</span>
+                                                }
+                                                @if (!string.IsNullOrEmpty(country.Iso3))
+                                                {
+                                                    <span class="etw-iso-badge">@country.Iso3</span>
+                                                }
+                                            </div>
+                                        </div>
+                                        <aside class="notes">
+                                            @country.Country — ISO 3166-1 alpha-2: @country.Iso2, alpha-3: @country.Iso3
+                                        </aside>
+                                    </section>
+                                }
+
+                                @* ── End slide ──────────────────────────────────── *@
+                                <section data-background-gradient="linear-gradient(135deg,#0f6020 0%,#1e5c14 50%,#1a4510 100%)"
+                                         data-transition="zoom">
+                                    <h2>🎉 World Tour Complete!</h2>
+                                    <p style="color:rgba(255,255,255,0.8)">
+                                        @_countries.Count countries explored
+                                    </p>
+                                    <p style="margin-top:2rem">
+                                        <a href="https://countriesnow.space"
+                                           target="_blank"
+                                           style="color:rgba(255,255,255,0.6);font-size:0.8em">
+                                            Data by countriesnow.space
+                                        </a>
+                                    </p>
+                                    <aside class="notes">End of the presentation. All @_countries.Count countries have been shown.</aside>
+                                </section>
+
+                            </div>@* /.slides *@
+                        </div>@* /.reveal *@
+
+                        </div>@* /.etw-slide-container *@
+                        }
+                        else
+                        {
+                            @* reveal.js needs JavaScript (it initialises the deck and injects its
+                               own CSS), which the design-time preview / static pre-render lack.
+                               Show a static title-slide stand-in so the component still renders
+                               meaningfully in Radzen Blazor Studio. *@
+                            <div style="text-align:center;color:#fff;padding:2.5rem 1.5rem;min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                                <div style="font-size:5rem;line-height:1;margin-bottom:1rem;">🌍</div>
+                                <h2 style="color:#fff;margin:0 0 0.75rem;">Explore the World</h2>
+                                <p style="color:rgba(255,255,255,0.65);margin:0;">
+                                    @_countries.Count countries &nbsp;·&nbsp; countriesnow.space
+                                </p>
+                                <p style="color:rgba(255,255,255,0.4);font-size:0.8rem;margin-top:1.75rem;">
+                                    The reveal.js slideshow runs in the live app (requires JavaScript).
+                                </p>
+                            </div>
+                        }
+
+                    </div>@* /.etw-slides-wrapper *@
+
+                    @* ── Quick-jump country list ──────────────────────────────────── *@
+                    <RadzenCard class="etw-slides-jumpbar"
+                                Style="flex-shrink:0;border-radius:0;padding:0.4rem 0.75rem;border-left:none;border-right:none;border-bottom:none;">
+                        <RadzenStack Style="overflow-x:auto;white-space:nowrap;padding-bottom:2px"
+                                     Orientation="Orientation.Horizontal"
+                                     AlignItems="AlignItems.Center"
+                                     Gap="0.4rem">
+                            <RadzenText Style="font-size:0.95rem;color:var(--rz-text-secondary-color);white-space:nowrap">
+                                Jump:
+                            </RadzenText>
+                            @{ var jumpNumber = 0; }
+                            @foreach (var country in _countries)
+                            {
+                                var idx = ++jumpNumber; @* 1-based; +1 for title slide offset *@
+                                var jumpCountry = country;
+                                var isActive = _slideH == idx;
+                                <RadzenButton title="@jumpCountry.Country"
+                                              Style="font-size:0.95rem;padding:5px 12px;min-width:3rem;text-align:center"
+                                              Text="@jumpCountry.Iso2"
+                                              Click="@(() => NavToAsync(idx))"
+                                              ButtonStyle="@(isActive ? ButtonStyle.Primary : ButtonStyle.Light)"
+                                              Size="ButtonSize.Small" />
+                            }
+                        </RadzenStack>
+                    </RadzenCard>
+
+                </RadzenStack>
+            }
+
+        </ChildContent>
+        <ErrorContent Context="ex">
+            <RadzenStack Class="p-4"
+                         Gap="1rem">
+                <RadzenAlert AlertStyle="AlertStyle.Danger"
+                             AllowClose="false">
+                    <strong>An error occurred:</strong> @ex.Message
+                </RadzenAlert>
+            </RadzenStack>
+        </ErrorContent>
+    </ErrorBoundary>
+</div>

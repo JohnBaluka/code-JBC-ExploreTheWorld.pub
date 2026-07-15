@@ -1,0 +1,8 @@
+﻿CREATE TABLE [cns_CountryFlag] (
+  [GUID] GUID CONSTRAINT [PrimaryKey] PRIMARY KEY UNIQUE NOT NULL,
+  [Row_ID] AUTOINCREMENT CONSTRAINT [Row_ID] UNIQUE,
+  [Iso2] VARCHAR (2) CONSTRAINT [cns_CountryCountryFlag] REFERENCES [cns_Country] ([Iso2]) CONSTRAINT [Iso2] UNIQUE,
+  [Name] VARCHAR (255),
+  [Flag] LONGTEXT,
+  [DialCode] VARCHAR (20)
+)

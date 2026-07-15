@@ -1,0 +1,17 @@
+@page "/separate-files-demo"
+@rendermode InteractiveAuto
+
+<PageTitle>Separate Files Demo</PageTitle>
+
+<h2 class="demo-title">Separate Files Blazor Component</h2>
+
+<div class="demo-card">
+    <p class="demo-message">@Message</p>
+
+    <label for="separateFilesName">Name</label>
+    <input id="separateFilesName" @bind="Name" placeholder="Enter your name" />
+
+    <button @onclick="ShowGreetingAsync">
+        Show JS Greeting
+    </button>
+</div>

@@ -1,0 +1,4 @@
+﻿CREATE TABLE [APP__Setting] (
+  [Name] VARCHAR (255) CONSTRAINT [PrimaryKey] PRIMARY KEY UNIQUE NOT NULL,
+  [Value] VARCHAR (255)
+)

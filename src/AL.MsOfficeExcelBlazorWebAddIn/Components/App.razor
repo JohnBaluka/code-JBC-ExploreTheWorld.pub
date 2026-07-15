@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet"
+          href="@Assets["/css/app.css"]" />
+    <link rel="stylesheet"
+          href="@Assets["ExploreTheWorld.AL.MsOfficeExcelBlazorWebAddIn.styles.css"]" />
+    <ImportMap />
+    <link rel="icon"
+          type="image/png"
+          href="/Images/favicon.png" />
+
+    <link rel="stylesheet"
+          href="_content/Radzen.Blazor/css/default.css" />
+
+    <script type="text/javascript">
+        window._historyCache = {
+            replaceState: window.history.replaceState,
+            pushState: window.history.pushState
+        };
+    </script>
+
+    <script type="text/javascript"
+            src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+    <script type="text/javascript">
+        window.history.replaceState = window._historyCache.replaceState;
+        window.history.pushState = window._historyCache.pushState;
+    </script>
+
+    <HeadOutlet />
+</head>
+
+@using ExploreTheWorld.AL.MsOfficeExcelBlazorWebAddIn.Client.Components
+
+<body>
+    <Routes />
+    <WasmBridge />
+    <ServerBridge />
+
+    @* getWindowWidth / watchWindowWidth are provided by Layout__Interop (DL.MsJSInterop)
+       as an ESM module; RenderModeInfo injects the interop instead of using globals. *@
+
+    <script type="text/javascript">
+        (function () {
+            console.log("[bridge] Initializing bridge infrastructure");
+            var dotNetRefs = new Map();
+            var resolvers = {};
+
+            window.dotNetReady = {
+                wasm: new Promise(function (resolve) { resolvers.wasm = resolve; }),
+                server: new Promise(function (resolve) { resolvers.server = resolve; })
+            };
+            window.dotNetRefs = dotNetRefs;
+
+            window.signalDotNetReady = function (name, dotNetRef) {
+                console.log("[bridge] signalDotNetReady: " + name + " bridge ready");
+                dotNetRefs.set(name, dotNetRef);
+                if (resolvers[name]) {
+                    resolvers[name]();
+                } else {
+                    console.warn("[bridge] No resolver found for: " + name);
+                }
+            };
+        })();
+    </script>
+
+    <script src="_framework/blazor.web.js"></script>
+    <script src="./commands/commands.js"
+            type="text/javascript"></script>
+</body>
+
+</html>

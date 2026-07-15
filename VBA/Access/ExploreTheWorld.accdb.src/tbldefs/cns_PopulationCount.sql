@@ -1,0 +1,7 @@
+﻿CREATE TABLE [cns_PopulationCount] (
+  [GUID] GUID CONSTRAINT [PrimaryKey] PRIMARY KEY UNIQUE NOT NULL,
+  [Row_ID] AUTOINCREMENT CONSTRAINT [Row_ID] UNIQUE,
+  [CountryPopulation_GUID] GUID,
+  [Year] VARCHAR (10),
+  [Value] DOUBLE
+)

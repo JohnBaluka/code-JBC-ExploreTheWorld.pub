@@ -1,0 +1,63 @@
+﻿{
+  "Info": {
+    "Class": "clsDbNavPaneGroup",
+    "Description": "Navigation Pane Custom Groups"
+  },
+  "Items": {
+    "Categories": [
+      {
+        "Name": "Custom",
+        "Flags": 0,
+        "Position": 2,
+        "Groups": [
+          {
+            "Name": "Explore The World",
+            "Flags": 0,
+            "Position": 1,
+            "Objects": [
+              {
+                "Name": "cns_Country",
+                "Type": -32768,
+                "Flags": 0,
+                "Icon": 0,
+                "Position": 0,
+                "NameInGroup": "CountriesNow Data"
+              },
+              {
+                "Name": "MsExcel",
+                "Type": -32768,
+                "Flags": 0,
+                "Icon": 0,
+                "Position": 1,
+                "NameInGroup": "Watcher - Excel"
+              },
+              {
+                "Name": "MsPowerPoint",
+                "Type": -32768,
+                "Flags": 0,
+                "Icon": 0,
+                "Position": 2,
+                "NameInGroup": "Watcher - PowerPoint"
+              },
+              {
+                "Name": "MsWord",
+                "Type": -32768,
+                "Flags": 0,
+                "Icon": 0,
+                "Position": 3,
+                "NameInGroup": "Watcher - Word"
+              }
+            ]
+          },
+          {
+            "Name": "Unassigned Objects",
+            "Flags": 6,
+            "Position": 2,
+            "Objects": [
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

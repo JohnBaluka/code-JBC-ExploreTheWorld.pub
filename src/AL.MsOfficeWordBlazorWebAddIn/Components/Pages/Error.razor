@@ -1,0 +1,33 @@
+@page "/Error"
+@using System.Diagnostics
+
+<PageTitle>Error</PageTitle>
+
+<RadzenStack Style="padding:2rem;"
+             Orientation="Orientation.Vertical"
+             AlignItems="AlignItems.Center"
+             Gap="0.5rem">
+    <RadzenText Style="color:var(--rz-danger);"
+                TextStyle="TextStyle.H3">
+                Error.
+    </RadzenText>
+    <RadzenText Style="color:var(--rz-danger);"
+                TextStyle="TextStyle.H5">
+                An error occurred while processing your request.
+    </RadzenText>
+    @if (ShowRequestId)
+    {
+        <RadzenText TextStyle="TextStyle.Body2"><strong>Request ID:</strong> <code>@RequestId</code></RadzenText>
+    }
+</RadzenStack>
+
+@code {
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    private string? RequestId { get; set; }
+    private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+    protected override void OnInitialized() =>
+        RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+}

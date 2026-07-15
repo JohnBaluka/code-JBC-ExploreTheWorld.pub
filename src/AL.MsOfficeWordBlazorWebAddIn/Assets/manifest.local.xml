@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp
+          xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+          xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+          xsi:type="TaskPaneApp">
+
+  <Id>D1E2F3A4-B5C6-7D8E-9F0A-1B2C3D4E5F6A</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>John Baluka</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="ETW MsOfficeWordBlazorWebAddIn" />
+  <Description DefaultValue="Explore the World Word Add-in using Blazor Server+WASM hybrid"/>
+  <IconUrl DefaultValue="https://localhost:7100/Images/globe-32.png" />
+  <HighResolutionIconUrl DefaultValue="https://localhost:7100/Images/globe-64.png"/>
+  <SupportUrl DefaultValue="https://github.com/JohnBaluka" />
+  <AppDomains>
+    <AppDomain>AppDomain1</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Document" />
+  </Hosts>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="SharedRuntime" MinVersion="1.1"/>
+      <Set Name="WordApi" MinVersion="1.9"/>
+      <Set Name="DialogApi" MinVersion="1.2"/>
+      <Set Name="AddinCommands" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://localhost:7100" />
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Document">
+        <Runtimes>
+          <Runtime resid="WSharedUrl" lifetime="long" />
+        </Runtimes>
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="WTitle"/>
+            <Description resid="WDesc"/>
+            <LearnMoreUrl resid="WLearn"/>
+          </GetStarted>
+
+          <FunctionFile resid="WSharedUrl" />
+
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <CustomTab id="ETWWordBlazorTab">
+              <Group id="ETW.Word.Blazor.CountriesApiGroup">
+                <Label resid="WCountriesApiGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="WCountries16" />
+                  <bt:Image size="32" resid="WCountries32" />
+                  <bt:Image size="80" resid="WCountries80" />
+                </Icon>
+
+                <Control xsi:type="Button" id="ETW.Word.Blazor.CountriesApi.Button">
+                  <Label resid="WCountriesApiLabel" />
+                  <Supertip>
+                    <Title resid="WCountriesApiLabel" />
+                    <Description resid="WCountriesApiTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="WCountries16" />
+                    <bt:Image size="32" resid="WCountries32" />
+                    <bt:Image size="80" resid="WCountries80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ETWWordBlazorTaskpaneID</TaskpaneId>
+                    <SourceLocation resid="WCountriesApiUrl" />
+                  </Action>
+                </Control>
+              </Group>
+
+              <Group id="ETW.Word.Blazor.WatcherGroup">
+                <Label resid="WWatcherGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="WWatcher16" />
+                  <bt:Image size="32" resid="WWatcher32" />
+                  <bt:Image size="80" resid="WWatcher80" />
+                </Icon>
+
+                <Control xsi:type="Button" id="ETW.Word.Blazor.Watcher.Button">
+                  <Label resid="WWatcherLabel" />
+                  <Supertip>
+                    <Title resid="WWatcherLabel" />
+                    <Description resid="WWatcherTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="WWatcher16" />
+                    <bt:Image size="32" resid="WWatcher32" />
+                    <bt:Image size="80" resid="WWatcher80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ETWWordBlazorTaskpaneID</TaskpaneId>
+                    <SourceLocation resid="WEventsUrl" />
+                  </Action>
+                </Control>
+              </Group>
+
+              <Group id="ETW.Word.Blazor.ExportGroup">
+                <Label resid="WExportGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="WJson16" />
+                  <bt:Image size="32" resid="WJson32" />
+                  <bt:Image size="80" resid="WJson80" />
+                </Icon>
+
+                <Control xsi:type="Button" id="ETW.Word.Blazor.SaveAsJson.Button">
+                  <Label resid="WSaveAsJsonLabel" />
+                  <Supertip>
+                    <Title resid="WSaveAsJsonLabel" />
+                    <Description resid="WSaveAsJsonTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="WJson16" />
+                    <bt:Image size="32" resid="WJson32" />
+                    <bt:Image size="80" resid="WJson80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ETWWordBlazorTaskpaneID</TaskpaneId>
+                    <SourceLocation resid="WSaveAsJsonUrl" />
+                  </Action>
+                </Control>
+              </Group>
+              <Label resid="WTabLabel"/>
+            </CustomTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="WCountries16" DefaultValue="https://localhost:7100/Images/globe-16.png" />
+        <bt:Image id="WCountries32" DefaultValue="https://localhost:7100/Images/globe-32.png" />
+        <bt:Image id="WCountries80" DefaultValue="https://localhost:7100/Images/globe-80.png" />
+        <bt:Image id="WWatcher16" DefaultValue="https://localhost:7100/Images/watch-16.png" />
+        <bt:Image id="WWatcher32" DefaultValue="https://localhost:7100/Images/watch-32.png" />
+        <bt:Image id="WWatcher80" DefaultValue="https://localhost:7100/Images/watch-80.png" />
+        <bt:Image id="WJson16" DefaultValue="https://localhost:7100/Images/braces-16.png" />
+        <bt:Image id="WJson32" DefaultValue="https://localhost:7100/Images/braces-32.png" />
+        <bt:Image id="WJson80" DefaultValue="https://localhost:7100/Images/braces-80.png" />
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="WSharedUrl" DefaultValue="https://localhost:7100/" />
+        <bt:Url id="WSaveAsJsonUrl" DefaultValue="https://localhost:7100/save-as-json" />
+        <bt:Url id="WCountriesApiUrl" DefaultValue="https://localhost:7100/countries-now" />
+        <bt:Url id="WEventsUrl" DefaultValue="https://localhost:7100/events" />
+        <bt:Url id="WLearn" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812" />
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="WTitle" DefaultValue="Get started with the Explore the World Word Add-in!" />
+        <bt:String id="WTabLabel" DefaultValue="ETW (Web)" />
+        <bt:String id="WCountriesApiGroupLabel" DefaultValue="Countries API" />
+        <bt:String id="WWatcherGroupLabel" DefaultValue="Watcher" />
+        <bt:String id="WExportGroupLabel" DefaultValue="Export" />
+        <bt:String id="WSaveAsJsonLabel" DefaultValue="Save as JSON (Blazor)" />
+        <bt:String id="WCountriesApiLabel" DefaultValue="Countries Pane (Blazor)" />
+        <bt:String id="WWatcherLabel" DefaultValue="Watcher Pane (Blazor)" />
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="WDesc" DefaultValue="The Explore the World Word Add-in loaded. Click a button to open the taskpane." />
+        <bt:String id="WSaveAsJsonTip" DefaultValue="Save the active Word document as JSON" />
+        <bt:String id="WCountriesApiTip" DefaultValue="Open the Countries Now API browser" />
+        <bt:String id="WWatcherTip" DefaultValue="Open the Word event watcher" />
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+
+</OfficeApp>

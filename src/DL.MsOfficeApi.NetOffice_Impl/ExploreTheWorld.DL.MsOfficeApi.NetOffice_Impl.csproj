@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsOfficeApi.NetOffice_Impl</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsOfficeApi.NetOffice_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Analyzers\NetOffice.Analyzers\NetOffice.Analyzers.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\NetOffice\NetOffice.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Office\OfficeApi.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Word\WordApi.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Excel\ExcelApi.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\PowerPoint\PowerPointApi.csproj" />
+  </ItemGroup>
+
+</Project>

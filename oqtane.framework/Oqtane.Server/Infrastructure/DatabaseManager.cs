@@ -1,0 +1,885 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Oqtane.Enums;
+using Oqtane.Extensions;
+using Oqtane.Models;
+using Oqtane.Repository;
+using Oqtane.Shared;
+
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable ConvertToUsingDeclaration
+// ReSharper disable BuiltInTypeReferenceStyleForMemberAccess
+// ReSharper disable UseIndexFromEndExpression
+
+namespace Oqtane.Infrastructure
+{
+    public interface IDatabaseManager
+    {
+        Installation IsInstalled();
+        Installation Install();
+        Installation Install(InstallConfig install);
+    }
+
+    public class DatabaseManager : IDatabaseManager
+    {
+        private readonly IConfigManager _config;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly ICacheManager _cache;
+        private readonly IDistributedLockManager _distributedLockManager;
+        private readonly IConfigManager _configManager;
+        private readonly ILogger<DatabaseManager> _filelogger;
+
+        public DatabaseManager(IConfigManager config, IServiceScopeFactory serviceScopeFactory, ICacheManager cache, IDistributedLockManager distributedLockManager, IConfigManager configManager, ILogger<DatabaseManager> filelogger)
+        {
+            _config = config;
+            _serviceScopeFactory = serviceScopeFactory;
+            _cache = cache;
+            _distributedLockManager = distributedLockManager;
+            _configManager = configManager;
+            _filelogger = filelogger;
+        }
+
+        public Installation IsInstalled()
+        {
+            var result = new Installation { Success = false, Message = string.Empty };
+
+            if (!string.IsNullOrEmpty(_config.GetConnectionString(SettingKeys.ConnectionStringKey)))
+            {
+                using (var db = GetInstallationContext())
+                {
+                    if (db.Database.CanConnect())
+                    {
+                        try
+                        {
+                            // verify master database contains a Tenant table ( ie. validate schema is properly provisioned )
+                            var provisioned = db.Tenant.Any();
+                            result.Success = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            result.Message = "Master Database Not Installed Correctly. " + ex.ToString();
+                        }
+                    }
+                    else // cannot connect
+                    {
+                        try
+                        {
+                            // get the actual connection error details
+                            db.Database.OpenConnection();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.Message = "Cannot Connect To Master Database. " + ex.ToString();
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public Installation Install()
+        {
+            return Install(null);
+        }
+
+        public Installation Install(InstallConfig install)
+        {
+            var result = new Installation { Success = false, Message = string.Empty };
+
+            ValidateConfiguration();
+
+            // get configuration
+            if (install == null)
+            {
+                // startup or automated installation
+                install = new InstallConfig
+                {
+                    ConnectionString = _config.GetConnectionString(SettingKeys.ConnectionStringKey),
+                    TenantName = TenantNames.Master,
+                    DatabaseType = _config.GetSection(SettingKeys.DatabaseSection)[SettingKeys.DatabaseTypeKey],
+                    IsNewTenant = false
+                };
+
+                var installation = IsInstalled();
+                if (!installation.Success)
+                {
+                    install.Aliases = GetInstallationConfig(SettingKeys.DefaultAliasKey, string.Empty);
+                    install.HostUsername = GetInstallationConfig(SettingKeys.HostUsernameKey, UserNames.Host);
+                    install.HostPassword = GetInstallationConfig(SettingKeys.HostPasswordKey, string.Empty);
+                    install.HostEmail = GetInstallationConfig(SettingKeys.HostEmailKey, string.Empty);
+                    install.HostName = GetInstallationConfig(SettingKeys.HostNameKey, UserNames.Host);
+
+                    if (!string.IsNullOrEmpty(install.ConnectionString) && !string.IsNullOrEmpty(install.Aliases) && !string.IsNullOrEmpty(install.HostPassword) && !string.IsNullOrEmpty(install.HostEmail))
+                    {
+                        // automated install
+                        install.SiteTemplate = GetInstallationConfig(SettingKeys.SiteTemplateKey, Constants.DefaultSiteTemplate);
+                        install.DefaultTheme = GetInstallationConfig(SettingKeys.DefaultThemeKey, Constants.DefaultTheme);
+                        install.DefaultContainer = GetInstallationConfig(SettingKeys.DefaultContainerKey, Constants.DefaultContainer);
+                        install.SiteName = Constants.DefaultSite;
+                        install.IsNewTenant = true;
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(install.ConnectionString))
+                        {
+                            // automated installation is missing required information
+                            result.Message = $"Error Installing Master Database For {SettingKeys.ConnectionStringKey}: {install.ConnectionString}. If You Are Trying To Execute An Automated Installation You Must Include The HostEmail, HostPassword, And DefaultAlias In appsettings.json.";
+                        }
+                        install.ConnectionString = "";
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(installation.Message))
+                    {
+                        // problem with prior installation
+                        _filelogger.LogError(Utilities.LogMessage(this, installation.Message));
+                        install.ConnectionString = "";
+                    }
+                }
+            }
+            else
+            {
+                // install wizard or add new site
+                if (!string.IsNullOrEmpty(install.Aliases))
+                {
+                    if (string.IsNullOrEmpty(install.SiteTemplate))
+                    {
+                        install.SiteTemplate = GetInstallationConfig(SettingKeys.SiteTemplateKey, Constants.DefaultSiteTemplate);
+                    }
+                    if (string.IsNullOrEmpty(install.DefaultTheme))
+                    {
+                        install.DefaultTheme = GetInstallationConfig(SettingKeys.DefaultThemeKey, Constants.DefaultTheme);
+                    }
+                    if (string.IsNullOrEmpty(install.DefaultContainer))
+                    {
+                        install.DefaultContainer = GetInstallationConfig(SettingKeys.DefaultContainerKey, Constants.DefaultContainer);
+                    }
+
+                    // add new site
+                    if (install.TenantName != TenantNames.Master && install.ConnectionString.Contains("="))
+                    {
+                        _configManager.AddOrUpdateSetting($"{SettingKeys.ConnectionStringsSection}:{install.TenantName}", install.ConnectionString, true);
+                    }
+                    if (install.TenantName == TenantNames.Master && !install.ConnectionString.Contains("="))
+                    {
+                        install.ConnectionString = _config.GetConnectionString(install.ConnectionString);
+                    }
+                }
+                else
+                {
+                    result.Message = "Invalid Installation Configuration";
+                    install.ConnectionString = "";
+                }
+            }
+
+            // proceed with installation/migration
+            if (!string.IsNullOrEmpty(install.ConnectionString))
+            {
+                var lockKey = "StartUp";
+                while (!_distributedLockManager.TryAcquireLock(lockKey, "true", TimeSpan.FromMinutes(1)))
+                {
+                    // wait until lock is acquired before proceeding (this prevents multiple instances from attempting to install/migrate concurrently)
+                }
+
+                result = CreateDatabase(install);
+                if (result.Success)
+                {
+                    result = MigrateMaster(install);
+                    if (result.Success)
+                    {
+                        result = CreateTenant(install);
+                        if (result.Success)
+                        {
+                            result = MigrateTenants(install);
+                            if (result.Success)
+                            {
+                                result = MigrateModules(install);
+                                if (result.Success)
+                                {
+                                    result = CreateSite(install);
+                                    if (result.Success)
+                                    {
+                                        result = InitializeSites(install);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                _distributedLockManager.ReleaseLock(lockKey);
+            }
+
+            return result;
+        }
+
+        private Installation CreateDatabase(InstallConfig install)
+        {
+            var result = new Installation { Success = false, Message = string.Empty };
+
+            if (install.IsNewTenant)
+            {
+                try
+                {
+                    var databaseType = install.DatabaseType;
+
+                    // get database type
+                    var type = Type.GetType(databaseType);
+
+                    if (type != null)
+                    {
+                        // create database object from type
+                        var database = Activator.CreateInstance(type) as Oqtane.Databases.Interfaces.IDatabase;
+
+                        // create data directory if does not exist (for LocalDB and SQLite)
+                        var dataDirectory = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
+                        if (!Directory.Exists(dataDirectory)) Directory.CreateDirectory(dataDirectory ?? String.Empty);
+
+                        var dbOptions = new DbContextOptionsBuilder().UseOqtaneDatabase(database, NormalizeConnectionString(install.ConnectionString)).Options;
+                        using (var dbc = new DbContext(dbOptions))
+                        {
+                            var databaseCreator = dbc.Database.GetService<IRelationalDatabaseCreator>();
+                            if (!databaseCreator.Exists())
+                            {
+                                // create empty database if it does not exist
+                                dbc.Database.EnsureCreated();
+                                result.Success = true;
+                            }
+                            else
+                            {
+                                // assume database is empty and ready for migrations
+                                result.Success = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        result.Message = $"The Database Provider {databaseType} Does Not Exist. If This Is A Development Environment Please Ensure You Have Performed A Full Compilation Of All Projects In The Oqtane Solution Prior To Running The Application.";
+                        _filelogger.LogError(Utilities.LogMessage(this, result.Message));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Message = "An Error Occurred Creating The Database. This Is Usually Related To Your User Not Having Sufficient Rights To Perform This Operation. Please Note That You Can Also Create The Database Manually Prior To Initiating The Install Wizard. " + ex.ToString();
+                    _filelogger.LogError(Utilities.LogMessage(this, result.Message));
+                }
+            }
+            else
+            {
+                result.Success = true;
+            }
+
+            return result;
+        }
+
+        private Installation MigrateMaster(InstallConfig install)
+        {
+            var result = new Installation { Success = false, Message = string.Empty };
+
+            if (install.TenantName == TenantNames.Master)
+            {
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var sql = scope.ServiceProvider.GetRequiredService<ISqlRepository>();
+
+                    var installation = IsInstalled();
+                    try
+                    {
+                        UpdateInstallation();
+                        UpdateConnectionString(install.ConnectionString);
+                        UpdateDatabaseType(install.DatabaseType);
+
+                        using (var masterDbContext = new MasterDBContext(new DbContextOptions<MasterDBContext>(), null, _config))
+                        {
+                            AddEFMigrationsHistory(sql, install.ConnectionString, install.DatabaseType, "", true);
+                            // push latest model into database
+                            masterDbContext.Database.Migrate();
+                            result.Success = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        result.Message = "An Error Occurred Provisioning The Master Database. This Is Usually Related To The Master Database Not Being In A Supported State. " + ex.ToString();
+                        _filelogger.LogError(Utilities.LogMessage(this, result.Message));
+                    }
+                }
+            }
+            else
+            {
+                result.Success = true;
+            }
+
+            return result;
+        }
+
+        private Installation CreateTenant(InstallConfig install)
+        {
+            var result = new Installation { Success = false, Message = string.Empty };
+
+            if (!string.IsNullOrEmpty(install.TenantName) && !string.IsNullOrEmpty(install.Aliases))
+            {
+                using (var db = GetInstallationContext())
+                {
+                    Tenant tenant;
+                    if (install.IsNewTenant)
+                    {
+                        tenant = new Tenant
+                        {
+                            Name = install.TenantName,
+                            DBConnectionString = (install.TenantName == TenantNames.Master) ? SettingKeys.ConnectionStringKey : install.TenantName,
+                            DBType = install.DatabaseType,
+                            CreatedBy = "",
+                            CreatedOn = DateTime.UtcNow,
+                            ModifiedBy = "",
+                            ModifiedOn = DateTime.UtcNow
+                        };
+                        db.Tenant.Add(tenant);
+                        db.SaveChanges();
+                        _cache.RemoveCache("Tenants");
+                    }
+                    else
+                    {
+                        tenant = db.Tenant.FirstOrDefault(item => item.Name == install.TenantName);
+                    }
+
+                    var aliasNames = install.Aliases.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(sValue => sValue.Trim()).ToArray();
+                    var firstAlias = aliasNames[0];
+                    foreach (var aliasName in aliasNames)
+                    {
+                        if (tenant != null)
+                        {
+                            var alias = new Alias
+                            {
+                                Name = aliasName,
+                                TenantId = tenant.TenantId,
+                                SiteId = -1,
+                                IsDefault = (aliasName == firstAlias),
+                                CreatedBy = "",
+                                CreatedOn = DateTime.UtcNow,
+                                ModifiedBy = "",
+                                ModifiedOn = DateTime.UtcNow
+                            };
+                            db.Alias.Add(alias);
+                        }
+
+                        db.SaveChanges();
+                    }
+
+                    _cache.RemoveCache("Aliases");
+                }
+            }
+
+            result.Success = true;
+
+            return result;
+        }
+
+        private Installation MigrateTenants(InstallConfig install)
+        {
+            var result = new Installation { Success = false, Message = string.Empty };
+
+            var versions = Constants.ReleaseVersions.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var upgrades = scope.ServiceProvider.GetRequiredService<IUpgradeManager>();
+                var sql = scope.ServiceProvider.GetRequiredService<ISqlRepository>();
+                var tenantManager = scope.ServiceProvider.GetRequiredService<ITenantManager>();
+                var DBContextDependencies = scope.ServiceProvider.GetRequiredService<IDBContextDependencies>();
+
+                using (var db = GetInstallationContext())
+                {
+                    foreach (var tenant in db.Tenant.ToList())
+                    {
+                        tenantManager.SetTenant(tenant.TenantId);
+                        tenant.DBConnectionString = MigrateConnectionString(db, tenant);
+                        try
+                        {
+                            var connectionString = _configManager.GetSetting($"{SettingKeys.ConnectionStringsSection}:{tenant.DBConnectionString}", "");
+                            if (!string.IsNullOrEmpty(connectionString))
+                            {
+                                using (var tenantDbContext = new TenantDBContext(new DbContextOptions<TenantDBContext>(), DBContextDependencies))
+                                {
+                                    AddEFMigrationsHistory(sql, connectionString, tenant.DBType, tenant.Version, false);
+                                    // push latest model into database
+                                    tenantDbContext.Database.Migrate();
+                                }
+                            }
+                            else
+                            {
+                                result.Message = "A Connection String Named " + tenant.DBConnectionString + " Does Not Exist For Tenant " + tenant.Name + " In The ConnectionStrings Section Of Appsettings.json";
+                                _filelogger.LogError(Utilities.LogMessage(this, result.Message));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            result.Message = "An Error Occurred Migrating The Database For Tenant " + tenant.Name + ". This Is Usually Related To Database Permissions, Connection String Mappings, Or The Database Not Being In A Supported State. " + ex.ToString();
+                            _filelogger.LogError(Utilities.LogMessage(this, result.Message));
+                        }
+
+                        if (string.IsNullOrEmpty(result.Message))
+                        {
+                            // execute any version specific upgrade logic
+                            var version = tenant.Version;
+                            var index = Array.FindIndex(versions, item => item == version);
+                            if (index != (versions.Length - 1))
+                            {
+                                try
+                                {
+                                    for (var i = (index + 1); i < versions.Length; i++)
+                                    {
+                                        upgrades.Upgrade(tenant, versions[i]);
+                                    }
+                                    tenant.Version = versions[versions.Length - 1];
+                                    db.Entry(tenant).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                }
+                                catch (Exception ex)
+                                {
+                                    result.Message = "An Error Occurred Executing Upgrade Logic On Tenant " + tenant.Name + " - " + ex.ToString();
+                                    _filelogger.LogError(Utilities.LogMessage(this, result.Message));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            result.Success = string.IsNullOrEmpty(result.Message);
+
+            return result;
+        }
+
+        private Installation MigrateModules(InstallConfig install)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var moduleDefinitions = scope.ServiceProvider.GetRequiredService<IModuleDefinitionRepository>();
+                var sql = scope.ServiceProvider.GetRequiredService<ISqlRepository>();
+                var tenantManager = scope.ServiceProvider.GetRequiredService<ITenantManager>();
+
+                foreach (var moduleDefinition in moduleDefinitions.GetModuleDefinitions())
+                {
+                    if (!string.IsNullOrEmpty(moduleDefinition.ReleaseVersions))
+                    {
+                        var versions = moduleDefinition.ReleaseVersions.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        using (var db = GetInstallationContext())
+                        {
+                            var message = "";
+
+                            if (!string.IsNullOrEmpty(moduleDefinition.ServerManagerType))
+                            {
+                                var moduleType = Type.GetType(moduleDefinition.ServerManagerType);
+                                if (moduleType != null)
+                                {
+                                    foreach (var tenant in db.Tenant.ToList())
+                                    {
+                                        var index = Array.FindIndex(versions, item => item == moduleDefinition.Version);
+                                        if (tenant.Name == install.TenantName && install.TenantName != TenantNames.Master)
+                                        {
+                                            index = -1;
+                                        }
+                                        if (index != (versions.Length - 1) && ModuleSupportsDatabase(moduleDefinition.Databases, tenant.DBType))
+                                        {
+                                            for (var i = (index + 1); i < versions.Length; i++)
+                                            {
+                                                try
+                                                {
+                                                    if (moduleType.GetInterface(nameof(IInstallable)) != null)
+                                                    {
+                                                        tenantManager.SetTenant(tenant.TenantId);
+                                                        var moduleObject = ActivatorUtilities.CreateInstance(scope.ServiceProvider, moduleType) as IInstallable;
+                                                        if (moduleObject == null || !moduleObject.Install(tenant, versions[i]))
+                                                        {
+                                                            message = "An Error Occurred Executing IInstallable Interface For " + moduleDefinition.ServerManagerType + " On Tenant " + tenant.Name;
+                                                            _filelogger.LogError(Utilities.LogMessage(this, message));
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (!sql.ExecuteScript(tenant, moduleType.Assembly, Utilities.GetTypeName(moduleDefinition.ModuleDefinitionName) + "." + versions[i] + ".sql"))
+                                                        {
+                                                            message = "An Error Occurred Executing Database Script " + Utilities.GetTypeName(moduleDefinition.ModuleDefinitionName) + "." + versions[i] + ".sql On Tenant " + tenant.Name;
+                                                            _filelogger.LogError(Utilities.LogMessage(this, message));
+                                                        }
+                                                    }
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    message = "An Error Occurred Installing " + moduleDefinition.Name + " Version " + versions[i] + " On Tenant " + tenant.Name + " - " + ex.ToString();
+                                                    _filelogger.LogError(Utilities.LogMessage(this, message));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    message = "An Error Occurred Installing " + moduleDefinition.Name + " - ServerManagerType " + moduleDefinition.ServerManagerType + " Does Not Exist";
+                                    _filelogger.LogError(Utilities.LogMessage(this, message));
+                                }
+                            }
+
+                            // update module if all migrations were successful and version is not current
+                            if (string.IsNullOrEmpty(message) && moduleDefinition.Version != versions[versions.Length - 1])
+                            {
+                                // get module definition from database to retain user customizable property values
+                                var moduledef = db.ModuleDefinition.AsNoTracking().FirstOrDefault(item => item.ModuleDefinitionId == moduleDefinition.ModuleDefinitionId);
+                                moduleDefinition.Name = moduledef.Name;
+                                moduleDefinition.Description = moduledef.Description;
+                                moduleDefinition.Categories = moduledef.Categories;
+                                // update version
+                                moduleDefinition.Version = versions[versions.Length - 1];
+                                moduleDefinition.ModifiedOn = DateTime.UtcNow;
+                                db.Entry(moduleDefinition).State = EntityState.Modified;
+                                db.SaveChanges();
+                            }
+                        }
+                    }
+                }
+            }
+
+            // module migration issues are logged and should not prevent the framework from starting up
+            return new Installation { Success = true, Message = string.Empty };
+        }
+
+        private Installation CreateSite(InstallConfig install)
+        {
+            var result = new Installation { Success = false, Message = string.Empty };
+
+            if (!string.IsNullOrEmpty(install.TenantName) && !string.IsNullOrEmpty(install.Aliases) && !string.IsNullOrEmpty(install.SiteName))
+            {
+                try
+                {
+                    using (var scope = _serviceScopeFactory.CreateScope())
+                    {
+                        // set the alias explicitly so the tenant can be resolved
+                        var aliases = scope.ServiceProvider.GetRequiredService<IAliasRepository>();
+                        var aliasNames = install.Aliases.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(sValue => sValue.Trim()).ToArray();
+                        var firstAlias = aliasNames[0];
+                        var alias = aliases.GetAliases().FirstOrDefault(item => item.Name == firstAlias);
+                        var tenantManager = scope.ServiceProvider.GetRequiredService<ITenantManager>();
+                        tenantManager.SetAlias(alias);
+
+                        var sites = scope.ServiceProvider.GetRequiredService<ISiteRepository>();
+                        var site = sites.GetSites().FirstOrDefault(item => item.Name == install.SiteName);
+                        if (site == null)
+                        {
+                            var tenants = scope.ServiceProvider.GetRequiredService<ITenantRepository>();
+                            var users = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+                            var roles = scope.ServiceProvider.GetRequiredService<IRoleRepository>();
+                            var userRoles = scope.ServiceProvider.GetRequiredService<IUserRoleRepository>();
+                            var folders = scope.ServiceProvider.GetRequiredService<IFolderRepository>();
+                            var log = scope.ServiceProvider.GetRequiredService<ILogManager>();
+                            var identityUserManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+                            var tenant = tenants.GetTenants().FirstOrDefault(item => item.Name == install.TenantName);
+                            var rendermode = (!string.IsNullOrEmpty(install.RenderMode)) ? install.RenderMode : _configManager.GetSection("RenderMode").Value;
+                            var runtime = (!string.IsNullOrEmpty(install.Runtime)) ? install.Runtime : _configManager.GetSection("Runtime").Value;
+
+                            site = new Site
+                            {
+                                Name = install.SiteName,
+                                LogoFileId = null,
+                                FaviconFileId = null,
+                                PwaIsEnabled = false,
+                                PwaAppIconFileId = null,
+                                PwaSplashIconFileId = null,
+                                AllowRegistration = false,
+                                CaptureBrokenUrls = false,
+                                VisitorTracking = true,
+                                DefaultThemeType = (!string.IsNullOrEmpty(install.DefaultTheme)) ? install.DefaultTheme : Constants.DefaultTheme,
+                                DefaultContainerType = (!string.IsNullOrEmpty(install.DefaultContainer)) ? install.DefaultContainer : Constants.DefaultContainer,
+                                AdminContainerType = (!string.IsNullOrEmpty(install.DefaultAdminContainer)) ? install.DefaultAdminContainer : Constants.DefaultAdminContainer,
+                                SiteTemplateType = install.SiteTemplate,
+                                RenderMode = rendermode,
+                                Runtime = runtime,
+                                Prerender = (rendermode == RenderModes.Interactive),
+                                Hybrid = false,
+                                EnhancedNavigation = true,
+                                CultureCode = "en",
+                                TenantId = tenant.TenantId // required for site creation
+                            };
+                            site = sites.AddSite(site);
+
+                            if (!string.IsNullOrEmpty(install.HostUsername))
+                            {
+                                var identityUser = identityUserManager.FindByNameAsync(install.HostUsername).GetAwaiter().GetResult();
+                                if (identityUser == null)
+                                {
+                                    identityUser = new IdentityUser { UserName = install.HostUsername, Email = install.HostEmail, EmailConfirmed = true };
+                                    var create = identityUserManager.CreateAsync(identityUser, install.HostPassword).GetAwaiter().GetResult();
+                                    if (create.Succeeded)
+                                    {
+                                        var user = new User
+                                        {
+                                            SiteId = site.SiteId,
+                                            Username = install.HostUsername,
+                                            Password = install.HostPassword,
+                                            Email = install.HostEmail,
+                                            DisplayName = install.HostName,
+                                            LastIPAddress = "",
+                                            LastLoginOn = null
+                                        };
+                                        user = users.AddUser(user);
+
+                                        // add host role
+                                        var hostRoleId = roles.GetRoles(user.SiteId, true).FirstOrDefault(item => item.Name == RoleNames.Host)?.RoleId ?? 0;
+                                        var userRole = new UserRole { UserId = user.UserId, RoleId = hostRoleId, EffectiveDate = null, ExpiryDate = null, IgnoreSecurityStamp = true };
+                                        userRoles.AddUserRole(userRole);
+                                    }
+                                }
+                            }
+
+                            foreach (var aliasName in aliasNames)
+                            {
+                                alias = aliases.GetAliases().FirstOrDefault(item => item.Name == aliasName);
+                                if (alias != null)
+                                {
+                                    alias.SiteId = site.SiteId;
+                                    aliases.UpdateAlias(alias);
+                                }
+                            }
+
+                            tenant.Version = Constants.Version;
+                            tenants.UpdateTenant(tenant);
+
+                            if (site != null) log.Log(site.SiteId, Shared.LogLevel.Information, this, LogFunction.Create, "Site Created {Site}", site);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Message = "An Error Occurred Creating Site - " + ex.ToString();
+                }
+            }
+
+            if (string.IsNullOrEmpty(result.Message))
+            {
+                result.Success = true;
+            }
+            else
+            {
+                _filelogger.LogError(Utilities.LogMessage(this, result.Message));
+            }
+
+            return result;
+        }
+
+        private Installation InitializeSites(InstallConfig install)
+        {
+            var result = new Installation { Success = false, Message = string.Empty };
+
+            try
+            {
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var tenantManager = scope.ServiceProvider.GetRequiredService<ITenantManager>();
+                    var aliasRepository = scope.ServiceProvider.GetRequiredService<IAliasRepository>();
+                    var tenants = scope.ServiceProvider.GetRequiredService<ITenantRepository>();
+                    var sites = scope.ServiceProvider.GetRequiredService<ISiteRepository>();
+
+                    var current = tenantManager.GetAlias();
+
+                    var aliases = aliasRepository.GetAliases().ToList();
+                    foreach (var tenant in tenants.GetTenants().ToList())
+                    {
+                        tenantManager.SetTenant(tenant.TenantId);
+                        foreach (var site in sites.GetSites())
+                        {
+                            var alias = aliases.FirstOrDefault(item => item.TenantId == tenant.TenantId && item.SiteId == site.SiteId && item.IsDefault);
+                            if (alias != null)
+                            {
+                                tenantManager.SetAlias(alias);
+
+                                // execute site migrations
+                                var version = sites.ProcessSiteMigrations(alias, site);
+                                // process routable modules
+                                version = sites.ProcessPageTemplates(alias, site, version);
+                                if (site.Version != version)
+                                {
+                                    site.Version = version;
+                                    sites.UpdateSite(site);
+                                }
+                            }
+                        }
+                    }
+
+                    tenantManager.SetAlias(current);
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = "An Error Occurred Initializing Sites - " + ex.ToString();
+            }
+
+            if (string.IsNullOrEmpty(result.Message))
+            {
+                result.Success = true;
+            }
+            else
+            {
+                _filelogger.LogError(Utilities.LogMessage(this, result.Message));
+            }
+
+            return result;
+        }
+
+        private string DenormalizeConnectionString(string connectionString)
+        {
+            var dataDirectory = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
+            connectionString = connectionString.Replace(dataDirectory ?? String.Empty, $"|{Constants.DataDirectory}|");
+            return connectionString;
+        }
+
+        private InstallationContext GetInstallationContext()
+        {
+            var connectionString = NormalizeConnectionString(_config.GetConnectionString(SettingKeys.ConnectionStringKey));
+            var databaseType = _config.GetSection(SettingKeys.DatabaseSection)[SettingKeys.DatabaseTypeKey];
+
+            Databases.Interfaces.IDatabase database = null;
+            if (!string.IsNullOrEmpty(databaseType))
+            {
+                var type = Type.GetType(databaseType);
+                database = Activator.CreateInstance(type) as Oqtane.Databases.Interfaces.IDatabase;
+            }
+
+            return new InstallationContext(database, connectionString);
+        }
+
+        private string GetInstallationConfig(string key, string defaultValue)
+        {
+            return _configManager.GetSetting(SettingKeys.InstallationSection, key, defaultValue);
+        }
+
+        private string NormalizeConnectionString(string connectionString)
+        {
+            var dataDirectory = AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString();
+            connectionString = connectionString.Replace($"|{Constants.DataDirectory}|", dataDirectory);
+            return connectionString;
+        }
+
+        public void UpdateInstallation()
+        {
+            _config.GetInstallationId();
+        }
+
+        public void UpdateConnectionString(string connectionString)
+        {
+            connectionString = DenormalizeConnectionString(connectionString);
+            if (_config.GetConnectionString(SettingKeys.ConnectionStringKey) != connectionString)
+            {
+                _configManager.AddOrUpdateSetting($"{SettingKeys.ConnectionStringsSection}:{SettingKeys.ConnectionStringKey}", connectionString, true);
+            }
+        }
+
+        public void UpdateDatabaseType(string databaseType)
+        {
+            if (_config.GetSetting($"{SettingKeys.DatabaseSection}:{SettingKeys.DatabaseTypeKey}", "") != databaseType)
+            {
+                _configManager.AddOrUpdateSetting($"{SettingKeys.DatabaseSection}:{SettingKeys.DatabaseTypeKey}", databaseType, true);
+            }
+        }
+
+        public void AddEFMigrationsHistory(ISqlRepository sql, string connectionString, string databaseType, string version, bool isMaster)
+        {
+            // in version 2.1.0 the __EFMigrationsHistory tables were introduced and must be added to existing SQL Server installations
+            if ((isMaster || (version != null && Version.Parse(version).CompareTo(Version.Parse("2.1.0")) < 0)) && databaseType == Constants.DefaultDBType)
+            {
+                var script = (isMaster) ? "MigrateMaster.sql" : "MigrateTenant.sql";
+
+                var query = sql.GetScriptFromAssembly(Assembly.GetExecutingAssembly(), script);
+                query = query.Replace("{{Version}}", Constants.Version);
+
+                sql.ExecuteNonQuery(connectionString, databaseType, query);
+            }
+        }
+
+        public string MigrateConnectionString(InstallationContext db, Tenant tenant)
+        {
+            // migrate connection strings from the Tenant table to appsettings
+            if (tenant.DBConnectionString.Contains("="))
+            {
+                var defaultConnection = _configManager.GetConnectionString(SettingKeys.ConnectionStringKey);
+                if (tenant.DBConnectionString == defaultConnection)
+                {
+                    tenant.DBConnectionString = SettingKeys.ConnectionStringKey;
+                }
+                else
+                {
+                    _configManager.AddOrUpdateSetting($"{SettingKeys.ConnectionStringsSection}:{tenant.Name}", tenant.DBConnectionString, false);
+                    tenant.DBConnectionString = tenant.Name;
+                }
+                db.Entry(tenant).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            return tenant.DBConnectionString;
+        }
+
+        private void ValidateConfiguration()
+        {
+            var defaultDatabaseType = _configManager.GetSetting(SettingKeys.DatabaseSection, SettingKeys.DatabaseTypeKey, "");
+            if (defaultDatabaseType == "")
+            {
+                _configManager.AddOrUpdateSetting($"{SettingKeys.DatabaseSection}:{SettingKeys.DatabaseTypeKey}", Constants.DefaultDBType, true);
+            }
+            if (defaultDatabaseType.Contains(", Oqtane.Database."))
+            {
+                // DefaultDBType migrated to Oqtane.Server in 6.1.5
+                defaultDatabaseType = defaultDatabaseType.Substring(0, defaultDatabaseType.IndexOf(", ")) + ", Oqtane.Server";
+                _configManager.AddOrUpdateSetting($"{SettingKeys.DatabaseSection}:{SettingKeys.DatabaseTypeKey}", defaultDatabaseType, true);
+            }
+
+            var updateAvailableDatabases = false;
+            if (!_configManager.GetSection(SettingKeys.AvailableDatabasesSection).Exists())
+            {
+                updateAvailableDatabases = true;
+            }
+            else
+            {
+                // available databases migrated to Oqtane.Server in 6.1.5
+                updateAvailableDatabases = _configManager.GetSection(SettingKeys.AvailableDatabasesSection).GetChildren()
+                    .Any(item => item.GetSection("DBType").Value.Contains(", Oqtane.Database."));
+            }
+            if (updateAvailableDatabases)
+            {
+                string databases = "[";
+                databases += "{ \"Name\": \"LocalDB\", \"ControlType\": \"Oqtane.Installer.Controls.LocalDBConfig, Oqtane.Client\", \"DBType\": \"Oqtane.Database.SqlServer.SqlServerDatabase, Oqtane.Server\" },";
+                databases += "{ \"Name\": \"SQL Server\", \"ControlType\": \"Oqtane.Installer.Controls.SqlServerConfig, Oqtane.Client\", \"DBType\": \"Oqtane.Database.SqlServer.SqlServerDatabase, Oqtane.Server\" },";
+                databases += "{ \"Name\": \"SQLite\", \"ControlType\": \"Oqtane.Installer.Controls.SqliteConfig, Oqtane.Client\", \"DBType\": \"Oqtane.Database.Sqlite.SqliteDatabase, Oqtane.Server\" },";
+                databases += "{ \"Name\": \"MySQL\", \"ControlType\": \"Oqtane.Installer.Controls.MySQLConfig, Oqtane.Client\", \"DBType\": \"Oqtane.Database.MySQL.MySQLDatabase, Oqtane.Server\" },";
+                databases += "{ \"Name\": \"PostgreSQL\", \"ControlType\": \"Oqtane.Installer.Controls.PostgreSQLConfig, Oqtane.Client\", \"DBType\": \"Oqtane.Database.PostgreSQL.PostgreSQLDatabase, Oqtane.Server\" },";
+                databases += "{ \"Name\": \"Azure SQL\", \"ControlType\": \"Oqtane.Installer.Controls.AzureSqlConfig, Oqtane.Client\", \"DBType\": \"Oqtane.Database.SqlServer.SqlServerDatabase, Oqtane.Server\" }";
+                databases += "]";
+                _configManager.AddOrUpdateSetting(SettingKeys.AvailableDatabasesSection, databases, true);
+            }
+        }
+
+        private bool ModuleSupportsDatabase(string databases, string dbtype)
+        {
+            // check if module supports tenant database
+            if (!string.IsNullOrEmpty(databases))
+            {
+                foreach (var database in databases.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (dbtype.ToLower().Contains(database.ToLower()))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return string.IsNullOrEmpty(databases);
+        }
+    }
+}

@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.AL.MsOfficeExcelVstoAddIn</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.AL.MsOfficeExcelVstoAddIn</RootNamespace>
+    <Platforms>AnyCPU</Platforms>
+    <EnableComHosting>true</EnableComHosting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AL.WinFormsLib\ExploreTheWorld.AL.WinFormsLib.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi_Impl\ExploreTheWorld.DL.MsOfficeApi_Impl.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData\ExploreTheWorld.DL.CountriesNowSpaceData.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.SqliteDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.SqliteDb_Impl.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.AccessDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.AccessDb_Impl.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="RibbonUI.xml" />
+    <!-- Physical HostPage needed by BlazorWebView; the rest of the Blazor assets are
+         served by the ManifestStaticWebAsset provider from the *.staticwebassets.*.json
+         manifests that are automatically propagated from the referenced Razor projects. -->
+    <Content Include="..\AL.WinFormApp\wwwroot\index.html" Link="wwwroot\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+
+  <Target Name="RegisterComAddin64" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+    <!-- CLSID InprocServer32: point to comhost.dll (not mscoree.dll) -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C2B3D4E5-F6A7-4890-BCDE-F01234567890}&quot; /ve /d &quot;JBC ETW Excel Watcher (net10)&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C2B3D4E5-F6A7-4890-BCDE-F01234567890}\InprocServer32&quot; /ve /d &quot;$(TargetDir)$(AssemblyName).comhost.dll&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C2B3D4E5-F6A7-4890-BCDE-F01234567890}\InprocServer32&quot; /v ThreadingModel /d Both /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeExcelVstoAddIn.Addin&quot; /ve /d &quot;JBC ETW Excel Watcher (net10)&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeExcelVstoAddIn.Addin\CLSID&quot; /ve /d &quot;{C2B3D4E5-F6A7-4890-BCDE-F01234567890}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\Excel\Addins\JBC.ExploreTheWorld.AL.MsOfficeExcelVstoAddIn.Addin&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\Excel\Addins\JBC.ExploreTheWorld.AL.MsOfficeExcelVstoAddIn.Addin&quot; /v FriendlyName /d &quot;JBC ETW Excel Watcher (net10)&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\Excel\Addins\JBC.ExploreTheWorld.AL.MsOfficeExcelVstoAddIn.Addin&quot; /v Description /d &quot;ExploreTheWorld Excel event watcher&quot; /f" ContinueOnError="WarnAndContinue" />
+  </Target>
+  <Target Name="UnregisterComAddin64" AfterTargets="Clean" Condition=" '$(Configuration)' == 'Debug' ">
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\CLSID\{C2B3D4E5-F6A7-4890-BCDE-F01234567890}&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficeExcelVstoAddIn.Addin&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Microsoft\Office\Excel\Addins\JBC.ExploreTheWorld.AL.MsOfficeExcelVstoAddIn.Addin&quot; /f" ContinueOnError="true" />
+  </Target>
+
+  <!-- In COM add-in context Assembly.GetEntryAssembly() is null, so BlazorWebView.CreateFileProvider
+       falls back to a plain PhysicalFileProvider and never loads the static web assets manifest.
+       Physically copy Radzen.Blazor's wwwroot so all _content/Radzen.Blazor/* assets are reachable. -->
+  <!-- Copy Radzen.Blazor static assets from NuGet package to wwwroot\_content\Radzen.Blazor\.
+       BlazorWebView uses PhysicalFileProvider which does not resolve StaticWebAssets manifests,
+       so assets must be physically present in the output folder. -->
+  <Target Name="CopyRadzenStaticAssets" AfterTargets="Build">
+    <ItemGroup>
+      <_RadzenFiles Include="$(NuGetPackageRoot)radzen.blazor\11.0.4\staticwebassets\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_RadzenFiles)" DestinationFiles="@(_RadzenFiles->'$(OutputPath)wwwroot\_content\Radzen.Blazor\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- Physically copy AL.BlazorLib's wwwroot so _content/JBC.ExploreTheWorld.AL.BlazorLib/* assets
+       (e.g. js/layout.js) are reachable via PhysicalFileProvider in the COM-hosted BlazorWebView. -->
+  <Target Name="CopyBlazorLibStaticAssets" AfterTargets="Build">
+    <ItemGroup>
+      <_BlazorLibFiles Include="$(MSBuildProjectDirectory)\..\AL.BlazorLib\wwwroot\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_BlazorLibFiles)" DestinationFiles="@(_BlazorLibFiles->'$(OutputPath)wwwroot\_content\JBC.ExploreTheWorld.AL.BlazorLib\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

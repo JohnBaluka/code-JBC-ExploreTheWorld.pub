@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.CountriesNowSpaceApi</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.CountriesNowSpaceApi</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+  </ItemGroup>
+
+
+</Project>

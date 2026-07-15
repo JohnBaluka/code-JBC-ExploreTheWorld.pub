@@ -1,0 +1,12 @@
+﻿{
+  "Info": {
+    "Class": "clsDbSharedImage",
+    "Description": "Shared Image Gallery Item"
+  },
+  "Items": {
+    "Name": "1_Slide1",
+    "FileName": "1_Slide1.SVG",
+    "Extension": "SVG",
+    "ContentHash": "6bd8370"
+  }
+}

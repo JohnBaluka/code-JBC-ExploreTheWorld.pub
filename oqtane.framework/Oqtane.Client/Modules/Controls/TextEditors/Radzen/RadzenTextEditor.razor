@@ -1,0 +1,246 @@
+@using Microsoft.Extensions.Configuration
+@using Oqtane.Interfaces
+@using System.Text.RegularExpressions
+@using Radzen
+@using Radzen.Blazor
+@using System.Reflection
+
+@namespace Oqtane.Modules.Controls
+@inherits ModuleControlBase
+@implements ITextEditor
+@implements IDisposable
+@inject Radzen.ThemeService ThemeService
+@inject IRadzenEditorSettingService EditorSettingService
+@inject DialogService DialogService
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<Oqtane.Modules.Controls.RadzenTextEditor> Localizer
+
+<RadzenTheme Theme="@RadzenEditorDefinitions.DefaultTheme" />
+<RadzenComponents />
+<RadzenHtmlEditor @ref="_editor" Visible="_visible" Placeholder="@Placeholder" style="@($"height: {Height}px;")"
+                  @bind-Value="_value" Execute="OnExecute" class="rz-text-editor app-editor-resizable">
+    <ChildContent>
+        @_toolbar
+        @if (UserSecurity.IsAuthorized(PageState.User, RoleNames.Admin))
+        {
+            <RadzenHtmlEditorCustomTool CommandName="Settings" Icon="settings" Title="@Localizer["Settings"]" />
+        }
+    </ChildContent>
+
+</RadzenHtmlEditor>
+
+@code {
+    private Oqtane.Modules.Controls.RadzenTextEditorInterop _interop;
+    private RadzenHtmlEditor _editor;
+    private string _value;
+    private bool _visible = false;
+    private string _theme;
+    private string _background;
+    private IList<string> _toolbarItems;
+    private RenderFragment _toolbar;
+
+    [Parameter]
+    public string Placeholder { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public int Height { get; set; } = 450;
+
+    public string Name => "Radzen HTML Editor";
+
+    public override List<Resource> Resources { get; set; } = new List<Resource>()
+    {
+        new Script("_content/Radzen.Blazor/Radzen.Blazor.js"),
+        new Script("js/texteditors/radzen/radzen-interop.js")
+    };
+
+    protected override void OnInitialized()
+    {
+        _interop = new Oqtane.Modules.Controls.RadzenTextEditorInterop(JSRuntime);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            var interop = new Interop(JSRuntime);
+            await interop.IncludeLink("", "stylesheet", $"{PageState?.Alias.BaseUrl}/css/texteditors/radzen/radzentexteditor.css", "text/css", "", "", "");
+            await LoadSettings();
+            _visible = true;
+            StateHasChanged();
+
+            await _interop.Initialize(_editor.Element);
+
+            if (!string.IsNullOrEmpty(_theme))
+            {
+                ThemeService.SetTheme(_theme);
+            }
+
+            if (!string.IsNullOrEmpty(_background))
+            {
+                var backgroundColor = RadzenEditorDefinitions.TransparentBackgroundColor;
+                switch (_background)
+                {
+                    case "Light":
+                        backgroundColor = RadzenEditorDefinitions.LightBackgroundColor;
+                        break;
+                    case "Dark":
+                        backgroundColor = RadzenEditorDefinitions.DarkBackgroundColor;
+                        break;
+                }
+                await _interop.SetBackgroundColor(_editor.Element, backgroundColor);
+            }
+
+            var subscribers = GetEventSubscribers(DialogService, "OnOpen");
+            var dialogSubscibers = subscribers?.Where(s => s.Method.DeclaringType == typeof(RadzenDialog)) ?? Enumerable.Empty<Delegate>();
+            if (dialogSubscibers.Count() > 1)
+            {
+                //clean the event to avoid multiple RadzenDialog instances subscribing to the event
+                dialogSubscibers.Skip(1).ToList().ForEach(s =>
+                {
+                    DialogService.OnOpen -= s as Action<string, Type, Dictionary<string, object>, DialogOptions>;
+                });
+            }
+        }
+    }
+
+    public void Initialize(string content)
+    {
+        _value = !string.IsNullOrEmpty(content) ? content : string.Empty;
+        DialogService.OnOpen += OnDialogOpened;
+    }
+
+    public void Dispose()
+    {
+        if (DialogService != null)
+        {
+            DialogService.OnOpen -= OnDialogOpened;
+        }
+    }
+
+    public async Task<string> GetContent()
+    {
+        await Task.CompletedTask;
+
+        return _value;
+    }
+
+    private async Task LoadSettings()
+    {
+        var scope = await EditorSettingService.GetSettingScopeAsync(ModuleState.ModuleId);
+        var editorSetting = scope == 1
+            ? await EditorSettingService.LoadSettingsFromModuleAsync(ModuleState.ModuleId)
+            : await EditorSettingService.LoadSettingsFromSiteAsync(PageState.Site.SiteId);
+
+        _theme = editorSetting.Theme;
+        _background = editorSetting.Background;
+        _toolbarItems = editorSetting.ToolbarItems.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+        _toolbar = SetupToolbarItems();
+    }
+
+    private RenderFragment SetupToolbarItems()
+    {
+        return builder =>
+        {
+            var sequence = 0;
+            foreach (var item in _toolbarItems)
+            {
+                if (RadzenEditorDefinitions.ToolbarItems.ContainsKey(item))
+                {
+                    sequence = RadzenEditorDefinitions.ToolbarItems[item](builder, sequence);
+                }
+            }
+        };
+    }
+
+    private async Task OnExecute(HtmlEditorExecuteEventArgs args)
+    {
+        switch(args.CommandName)
+        {
+            case "InsertImage":
+                await InsertImage(args.Editor);
+                break;
+            case "InsertLink":
+                await InsertLink(args.Editor);
+                break;
+            case "Settings":
+                await UpdateSettings(args.Editor);
+                break;
+        }
+    }
+
+    private async Task InsertImage(RadzenHtmlEditor editor)
+    {
+        await editor.SaveSelectionAsync();
+
+        var result = await DialogService.OpenAsync<RadzenFileManagerDialog>(Localizer["DialogTitle.SelectImage"], new Dictionary<string, object>
+        {
+            { "Filters", PageState.Site.ImageFiles }
+        }, new DialogOptions { CssClass = "rz-text-editor-dialog" });
+
+        await editor.RestoreSelectionAsync();
+
+        if (result != null)
+        {
+            await editor.ExecuteCommandAsync(HtmlEditorCommands.InsertHtml, result);
+        }
+    }
+
+    private async Task InsertLink(RadzenHtmlEditor editor)
+    {
+        await editor.SaveSelectionAsync();
+
+        var result = await DialogService.OpenAsync<RadzenInsertLinkDialog>(Localizer["DialogTitle.InsertLink"], new Dictionary<string, object>
+        {
+            { "Editor", editor }
+        }, new DialogOptions { CssClass = "rz-text-editor-dialog" });
+
+        await editor.RestoreSelectionAsync();
+
+        if (result != null)
+        {
+            await editor.ExecuteCommandAsync(HtmlEditorCommands.InsertHtml, result);
+        }
+    }
+
+    private async Task UpdateSettings(RadzenHtmlEditor editor)
+    {
+        await editor.SaveSelectionAsync();
+
+        var result = await DialogService.OpenAsync<RadzenTextEditorSettingsDialog>(Localizer["Settings"], null, new DialogOptions { Width = "650px" });
+        if (result == true)
+        {
+            NavigationManager.NavigateTo(NavigationManager.Uri);
+        }
+
+        await editor.RestoreSelectionAsync();
+    }
+
+    private async void OnDialogOpened(string title, Type componentType, Dictionary<string, object> parameters, DialogOptions options)
+    {
+        await _interop.UpdateDialogLayout(_editor.Element);
+    }
+
+    private Delegate[] GetEventSubscribers(object target, string eventName)
+    {
+        var type = target.GetType();
+        var eventField = type.GetField(eventName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        if (eventField == null)
+        {
+            return null;
+        }
+
+        var eventDelegate = eventField.GetValue(target) as Delegate;
+        if (eventDelegate == null)
+        {
+            return new Delegate[0];
+        }
+
+        return eventDelegate.GetInvocationList();
+    }
+}

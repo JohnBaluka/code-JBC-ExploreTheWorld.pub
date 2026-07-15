@@ -1,0 +1,52 @@
+@page "/save-as-json"
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Save As JSON</PageTitle>
+
+<LoadingProgress>
+    <RadzenStack Style="flex:1 1 auto; min-height:0;"
+                 Orientation="Orientation.Vertical"
+                 AlignItems="AlignItems.Center"
+                 Gap="0.5rem">
+        <RadzenText TextStyle="TextStyle.H4">📄 Save As JSON</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1">
+            Serializes the active PowerPoint presentation to JSON via the Office JavaScript API.
+        </RadzenText>
+
+        <RadzenButton ButtonStyle="ButtonStyle.Primary"
+                      Click="BuildJsonAsync"
+                      Disabled="@_isLoading"
+                      Text="@(_isLoading ? "Building..." : "Build JSON")" />
+
+        @if (_isLoading)
+        {
+            <RadzenProgressBarCircular Style="width:48px; height:48px; margin-top:1rem;"
+                                       ShowValue="false"
+                                       Mode="ProgressBarMode.Indeterminate" />
+        }
+        else if (_error is not null)
+        {
+            <RadzenAlert Style="width:100%;"
+                         AlertStyle="AlertStyle.Danger"
+                         ShowIcon="false"
+                         AllowClose="false">
+                         @_error
+            </RadzenAlert>
+        }
+        else if (_json is not null)
+        {
+            <RadzenStack Orientation="Orientation.Horizontal"
+                         Gap="0.5rem">
+                <RadzenButton ButtonStyle="ButtonStyle.Light"
+                              Click="CopyToClipboardAsync"
+                              Text="Copy to Clipboard" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light"
+                              Click="DownloadAsync"
+                              Text="Download .json" />
+            </RadzenStack>
+            <div style="flex:1 1 auto; min-height:150px; overflow-y:auto; background:#1e1e1e; color:#d4d4d4;
+                        border-radius:4px; padding:0.5rem; font-size:0.75rem;
+                        font-family:monospace; white-space:pre; width:100%;">@_json</div>
+        }
+    </RadzenStack>
+</LoadingProgress>

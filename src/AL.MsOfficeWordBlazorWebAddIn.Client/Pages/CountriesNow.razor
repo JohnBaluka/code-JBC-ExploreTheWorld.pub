@@ -1,0 +1,97 @@
+@page "/countries-now"
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Countries Now</PageTitle>
+
+<LoadingProgress>
+    <RadzenStack Style="flex:1 1 auto; min-height:0;"
+                 Orientation="Orientation.Vertical"
+                 Gap="0.5rem">
+
+        <RadzenText TextStyle="TextStyle.H4">🌍 Countries Now API</RadzenText>
+
+        <RadzenButton ButtonStyle="ButtonStyle.Primary"
+                      Click="LoadCountriesAsync"
+                      Disabled="@_isLoading"
+                      Text="@(_isLoading ? "Loading..." : "Load Countries")" />
+
+        @if (_isLoading)
+        {
+            <RadzenProgressBarCircular Style="width:48px; height:48px; margin:auto;"
+                                       ShowValue="false"
+                                       Mode="ProgressBarMode.Indeterminate" />
+        }
+        else if (_error is not null)
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Danger"
+                         ShowIcon="false"
+                         AllowClose="false">
+                         @_error
+            </RadzenAlert>
+        }
+        else if (_countries is not null)
+        {
+            <RadzenStack Orientation="Orientation.Horizontal"
+                         AlignItems="AlignItems.Center"
+                         Gap="0.75rem">
+                <RadzenText Style="margin:0;"
+                            TextStyle="TextStyle.Body2">
+                            @_countries.Length countries loaded.
+                </RadzenText>
+                <RadzenStack title="Insert Flag Images"
+                             Orientation="Orientation.Horizontal"
+                             AlignItems="AlignItems.Center"
+                             Gap="0.35rem">
+                    <RadzenSwitch @bind-Value="_includeFlags"
+                                  Disabled="@_isExporting" />
+                    <RadzenText Style="margin:0;"
+                                TextStyle="TextStyle.Body2">
+                                Flags
+                    </RadzenText>
+                </RadzenStack>
+                <RadzenButton ButtonStyle="ButtonStyle.Success"
+                              Icon="post_add"
+                              Click="ExportToDocumentAsync"
+                              Disabled="@_isExporting"
+                              Text="@(_isExporting ? "Exporting..." : "Export to Document")" />
+            </RadzenStack>
+
+            @if (_exportError is not null)
+            {
+                <RadzenAlert AlertStyle="AlertStyle.Danger"
+                             ShowIcon="false"
+                             AllowClose="true">
+                             @_exportError
+                </RadzenAlert>
+            }
+            else if (_exportStatus is not null)
+            {
+                <RadzenAlert AlertStyle="AlertStyle.Success"
+                             ShowIcon="false"
+                             AllowClose="true">
+                             @_exportStatus
+                </RadzenAlert>
+            }
+
+            <div style="flex:1 1 auto; min-height:0; overflow-y:auto;">
+                <RadzenDataGrid Style="width:100%;"
+                                Data="@_countries"
+                                TItem="CountryRow">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="CountryRow"
+                                             Property="Country"
+                                             Title="Country"
+                                             Sortable="true" />
+                        <RadzenDataGridColumn TItem="CountryRow"
+                                             Property="Iso2"
+                                             Title="ISO2" />
+                        <RadzenDataGridColumn TItem="CountryRow"
+                                             Property="Iso3"
+                                             Title="ISO3" />
+                    </Columns>
+                </RadzenDataGrid>
+            </div>
+        }
+
+    </RadzenStack>
+</LoadingProgress>

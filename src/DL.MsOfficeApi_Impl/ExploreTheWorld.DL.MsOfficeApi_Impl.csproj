@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsOfficeApi_Impl</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsOfficeApi_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Composition project: the single place (with the host apps that reference it) permitted to
+       reference the platform-specific DL repo `_Impl` projects. Holds the Office export factory,
+       the Save-As-JSON writers, and the writer dispatcher. AL.WinFormsLib / ._netF (the UI forms)
+       reference the DL contracts only and reach these through a host-supplied provider. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\NetOffice\NetOffice.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Office\OfficeApi.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Word\WordApi.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\Excel\ExcelApi.csproj" />
+    <ProjectReference Include="..\..\..\code-zgh-NetOfficeFw__NetOffice__10\Source\PowerPoint\PowerPointApi.csproj" />
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.OpenXml_Impl\ExploreTheWorld.DL.MsOfficeApi.OpenXml_Impl.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.NetOffice_Impl\ExploreTheWorld.DL.MsOfficeApi.NetOffice_Impl.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.Interop_Impl\ExploreTheWorld.DL.MsOfficeApi.Interop_Impl.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.Dynamic_Impl\ExploreTheWorld.DL.MsOfficeApi.Dynamic_Impl.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.Direct_Impl\ExploreTheWorld.DL.MsOfficeApi.Direct_Impl.csproj" />
+  </ItemGroup>
+</Project>

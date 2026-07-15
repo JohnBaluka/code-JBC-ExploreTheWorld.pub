@@ -1,0 +1,88 @@
+@page "/all-in-one-demo"
+@rendermode InteractiveAuto
+@inject IJSRuntime JS
+
+<PageTitle>All-in-One Demo</PageTitle>
+
+<h2 class="demo-title">All-in-One Blazor Component</h2>
+
+<div class="demo-card">
+    <p class="demo-message">@Message</p>
+
+    <label for="allInOneName">Name</label>
+    <input id="allInOneName" @bind="Name" placeholder="Enter your name" />
+
+    <button @onclick="ShowGreetingAsync">
+        Show JS Greeting
+    </button>
+</div>
+
+@* The JavaScript lives right here in the component. Because the page is
+   prerendered, this <script> is part of the initial HTML and runs in the
+   browser (Blazor also re-runs it during enhanced navigation), so the greeting
+   function is registered before the button can be clicked. No separate .js file
+   is needed. *@
+<script type="module">
+    window.blazorDemos = window.blazorDemos ?? {};
+    window.blazorDemos.allInOne = {
+        showAlert(message) {
+            alert(message);
+            console.log("All-in-one Blazor component called JavaScript:", message);
+        }
+    };
+</script>
+
+@code {
+    private string Name { get; set; } = "";
+    private string Message { get; set; } = "Enter a name and click the button.";
+
+    private async Task ShowGreetingAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            Message = "Please enter a name.";
+            return;
+        }
+
+        Message = $"Hello, {Name}!";
+        await JS.InvokeVoidAsync("blazorDemos.allInOne.showAlert", Message);
+    }
+}
+
+<style>
+    .demo-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2563eb;
+    }
+
+    .demo-card {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 1rem;
+        max-width: 420px;
+        background: #f9fafb;
+    }
+
+    .demo-message {
+        font-weight: 600;
+    }
+
+    .demo-card label {
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .demo-card input {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    .demo-card button {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+    }
+</style>

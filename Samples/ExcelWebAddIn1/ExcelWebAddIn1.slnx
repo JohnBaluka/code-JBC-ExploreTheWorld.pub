@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../ExcelWebAddIn1Web/ExcelWebAddIn1Web.csproj" />
+  <Project Path="ExcelWebAddIn1.csproj">
+    <Deploy />
+  </Project>
+</Solution>

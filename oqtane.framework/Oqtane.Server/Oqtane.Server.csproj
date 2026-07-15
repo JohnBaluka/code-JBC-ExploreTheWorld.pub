@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <RootNamespace>Oqtane</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <DefineConstants>$(DefineConstants);OQTANE</DefineConstants>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
+    <CompressionEnabled>false</CompressionEnabled>
+    <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="wwwroot\Modules\Templates\**" />
+    <Compile Remove="wwwroot\Themes\Templates\**" />
+    <Compile Remove="wwwroot\_content\*\**" />
+    <Content Remove="wwwroot\Modules\Templates\**" />
+    <Content Remove="wwwroot\Themes\Templates\**" />
+    <Content Remove="wwwroot\_content\*\**" />
+    <EmbeddedResource Remove="wwwroot\Modules\Templates\**" />
+    <EmbeddedResource Remove="wwwroot\Themes\Templates\**" />
+    <None Remove="wwwroot\Modules\Templates\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\MigrateMaster.sql" />
+    <EmbeddedResource Include="Scripts\MigrateTenant.sql" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.9" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="4.0.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+    <PackageReference Include="MailKit" Version="4.17.0" />
+    <PackageReference Include="ZiggyCreatures.FusionCache" Version="2.6.0" />
+    <PackageReference Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="2.6.0" />
+    <PackageReference Include="ZiggyCreatures.FusionCache.Backplane.StackExchangeRedis" Version="2.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- MySQL Database Provider Dependencies -->
+    <PackageReference Include="MySql.Data" Version="9.7.0" />
+    <PackageReference Include="MySql.EntityFrameworkCore" Version="10.0.7" />
+    <!-- PostgreSQL Database Provider Dependencies -->
+    <PackageReference Include="EFCore.NamingConventions" Version="10.0.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
+    <!-- SQLite Database Provider Dependencies -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.9" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
+    <!-- SQL Server Database Provider Dependencies -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
+  </ItemGroup>
+
+  <!-- Suppress EF Core internal warnings for Database Providers -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;EF1001;AD0001;NU1608</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;EF1001;AD0001</NoWarn>
+  </PropertyGroup> 
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Oqtane.Client\Oqtane.Client.csproj" />
+    <ProjectReference Include="..\Oqtane.Shared\Oqtane.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ExploreTheWorld Oqtane modules — Server projects carry their Client counterparts transitively.
+         Theme project is Client-only so it is referenced directly from here.
+         Oqtane scans /bin for assemblies named *oqtane* and registers IModule/ITheme/IClientStartup/IModuleControl. -->
+    <ProjectReference Include="..\..\src\AL.Oqtane\Radzen__Module.Server\ExploreTheWorld.AL.Oqtane.Radzen__Module.Server.csproj" />
+    <ProjectReference Include="..\..\src\AL.Oqtane\CountriesNow__Module.Server\ExploreTheWorld.AL.Oqtane.CountriesNow__Module.Server.csproj" />
+    <ProjectReference Include="..\..\src\AL.Oqtane\CountrySlides__Module.Server\ExploreTheWorld.AL.Oqtane.CountrySlides__Module.Server.csproj" />
+    <ProjectReference Include="..\..\src\AL.Oqtane\Theme\ExploreTheWorld.AL.Oqtane.Theme.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ModuleTemplateFiles Include="$(ProjectDir)wwwroot\Modules\Templates\**\*.*" />
+    <ThemeTemplateFiles Include="$(ProjectDir)wwwroot\Themes\Templates\**\*.*" />
+  </ItemGroup>
+
+  <Target Name="AddPayloadsFolder" AfterTargets="Publish">
+    <Copy SourceFiles="@(ModuleTemplateFiles)" DestinationFiles="@(ModuleTemplateFiles->'$(PublishDir)wwwroot\Modules\Templates\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
+    <Copy SourceFiles="@(ThemeTemplateFiles)" DestinationFiles="@(ThemeTemplateFiles->'$(PublishDir)wwwroot\Themes\Templates\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
+  </Target>
+  
+  <ItemGroup>
+    <!-- extends watching group to include *.dll files and exclude the ones cause an infinite loop -->
+    <Watch Include="**\*.dll" Exclude="**\Microsoft.EntityFrameworkCore.*.dll;**\Oqtane.Database.*.dll;" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Watch Remove="wwwroot\Modules\Templates\**" />
+  </ItemGroup>
+</Project>

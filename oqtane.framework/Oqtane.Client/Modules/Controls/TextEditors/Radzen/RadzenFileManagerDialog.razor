@@ -1,0 +1,44 @@
+@namespace Oqtane.Modules.Controls
+@using Radzen
+@using Radzen.Blazor
+@inject DialogService DialogService
+@inject IStringLocalizer<Oqtane.Modules.Controls.RadzenTextEditor> Localizer
+
+@if (!string.IsNullOrEmpty(_message))
+{
+    <div class="rz-html-editor-dialog-item">
+        <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+            @((MarkupString)_message)
+        </div>
+    </div>
+}
+<div class="rz-html-editor-dialog-item">
+    <FileManager @ref="_fileManager" Filter="@Filters" />
+</div>
+<div class="rz-html-editor-dialog-buttons">
+    <RadzenButton Text="@Localizer["InsertImage"]" Click="InsertImage" />
+    <RadzenButton Text="@Localizer["Cancel"]" Click="() => DialogService.Close()" ButtonStyle="ButtonStyle.Secondary" />
+</div>
+@code {
+    private FileManager _fileManager;
+    private string _message = string.Empty;
+
+    [Parameter]
+    public string Filters { get; set; }
+
+    private void InsertImage()
+    {
+        _message = string.Empty;
+        var file = _fileManager.GetFile();
+        if (file != null)
+        {
+            var result = $"<img src=\"{file.Url}\" style=\"max-width: 100%\" alt=\"{file.Name}\" />";
+            DialogService.Close(result);
+        }
+        else
+        {
+            _message = Localizer["Message.Require.Image"];
+            StateHasChanged();
+        }
+    }
+}

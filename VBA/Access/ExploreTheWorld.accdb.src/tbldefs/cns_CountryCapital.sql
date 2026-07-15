@@ -1,0 +1,7 @@
+﻿CREATE TABLE [cns_CountryCapital] (
+  [GUID] GUID CONSTRAINT [PrimaryKey] PRIMARY KEY UNIQUE NOT NULL,
+  [Row_ID] AUTOINCREMENT CONSTRAINT [Row_ID] UNIQUE,
+  [Iso2] VARCHAR (2) CONSTRAINT [cns_CountryCountryCapital] REFERENCES [cns_Country] ([Iso2]) CONSTRAINT [Iso2] UNIQUE,
+  [Name] VARCHAR (255),
+  [Capital] VARCHAR (255)
+)

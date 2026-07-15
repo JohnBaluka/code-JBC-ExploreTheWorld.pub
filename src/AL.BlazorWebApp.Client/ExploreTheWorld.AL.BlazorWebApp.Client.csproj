@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.AL.BlazorWebApp.Client</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.AL.BlazorWebApp.Client</RootNamespace>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AL.BlazorLib\ExploreTheWorld.AL.BlazorLib.csproj" />
+    <ProjectReference Include="..\AL\ExploreTheWorld.AL.csproj" />
+    <ProjectReference Include="..\BL\ExploreTheWorld.BL.csproj" />
+    <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
+    <ProjectReference Include="..\DL.MsJSInterop\ExploreTheWorld.DL.MsJSInterop.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.OpenXml_Impl\ExploreTheWorld.DL.MsOfficeApi.OpenXml_Impl.csproj" />
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.InMemoryDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.InMemoryDb_Impl.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.LocalStorageDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.LocalStorageDb_Impl.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.SessionStorageDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.SessionStorageDb_Impl.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.IndexedDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.IndexedDb_Impl.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <WasmNativeStrip>true</WasmNativeStrip>
+    <WasmBuildNative>true</WasmBuildNative>
+  </PropertyGroup>
+</Project>

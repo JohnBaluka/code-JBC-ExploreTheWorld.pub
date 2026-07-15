@@ -1,0 +1,27 @@
+@namespace JBC.ExploreTheWorld.AL.BlazorLib
+@inject JBC.ExploreTheWorld.AL.BlazorLib.Layout_AppService Layout_AppService
+
+<RadzenPanelMenu>
+    <RadzenPanelMenuItem Text="Home"
+                         Icon="home"
+                         Path="/"
+                         Match="NavLinkMatch.All" />
+    <RadzenPanelMenuItem Text="Countries Now"
+                         Icon="public"
+                         Path="/countries-now" />
+    <RadzenPanelMenuItem Text="Country Slides"
+                         Icon="slideshow"
+                         Path="/country-slides" />
+    @if (Layout_AppService.ShowWatcherNavItems)
+    {
+        <RadzenPanelMenuItem Text="Word Watcher"
+                             Icon="description"
+                             Path="/watcher-word" />
+        <RadzenPanelMenuItem Text="Excel Watcher"
+                             Icon="table_chart"
+                             Path="/watcher-excel" />
+        <RadzenPanelMenuItem Text="PowerPoint Watcher"
+                             Icon="present_to_all"
+                             Path="/watcher-powerpoint" />
+    }
+</RadzenPanelMenu>

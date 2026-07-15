@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.DL.CountriesNowSpaceData._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.CountriesNowSpaceData</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL._netF\ExploreTheWorld.CL._netF.csproj" />
+    <ProjectReference Include="..\DL._netF\ExploreTheWorld.DL._netF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.32" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.32" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\DL.CountriesNowSpaceData\**\*.cs">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="..\DL.CountriesNowSpaceData\obj\**" />
+    <Compile Remove="..\DL.CountriesNowSpaceData\ServiceCollectionExtensions.cs" />
+    <!-- Excluded: uses CreateDbContextAsync (EF Core 5+) and ExecuteDeleteAsync (EF Core 7+). _netF override below. -->
+    <Compile Remove="..\DL.CountriesNowSpaceData\CountriesNowSpaceApiManager__Repo.cs" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+</Project>

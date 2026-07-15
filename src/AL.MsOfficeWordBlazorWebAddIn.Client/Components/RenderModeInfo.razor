@@ -1,0 +1,83 @@
+@implements IAsyncDisposable
+@using JBC.ExploreTheWorld.DL.MsJSInterop.Layout
+@inject Layout__Interop__Interface LayoutInterop
+
+<RadzenStack Orientation="Orientation.Horizontal"
+             Gap="0.5rem"
+             AlignItems="AlignItems.Center">
+    <RadzenBadge id="renderModeBadge"
+                 title="Current Render Mode"
+                 Style="font-size: 11px;"
+                 BadgeStyle="@(RenderModeDisplay == "Server" ? BadgeStyle.Success : BadgeStyle.Info)"
+                 Text="@RenderModeDisplay" />
+    <RadzenBadge id="breakpointBadge"
+                 title="Current Breakpoint"
+                 Style="font-size: 11px;"
+                 BadgeStyle="@GetBreakpointBadgeStyle()"
+                 Text="@_currentBreakpoint" />
+</RadzenStack>
+
+@code {
+    private string _currentBreakpoint = "—";
+    private DotNetObjectReference<RenderModeInfo>? _selfRef;
+    private IJSObjectReference? _resizeSubscription;
+
+    private string RenderModeDisplay =>
+        RendererInfo.IsInteractive ? RendererInfo.Name : "Static SSR";
+
+    private BadgeStyle GetBreakpointBadgeStyle() => _currentBreakpoint switch
+    {
+        "XS" => BadgeStyle.Danger,
+        "SM" => BadgeStyle.Warning,
+        "MD" => BadgeStyle.Info,
+        "LG" => BadgeStyle.Success,
+        "XL" => BadgeStyle.Primary,
+        _    => BadgeStyle.Secondary
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var width = await LayoutInterop.GetWindowWidthAsync();
+                UpdateBreakpoint(width);
+                _selfRef = DotNetObjectReference.Create(this);
+                _resizeSubscription = await LayoutInterop.WatchWindowWidthAsync(_selfRef);
+                StateHasChanged();
+            }
+            catch (JSException) { }
+        }
+    }
+
+    [JSInvokable]
+    public void OnWindowWidthChanged(int width)
+    {
+        UpdateBreakpoint(width);
+        StateHasChanged();
+    }
+
+    private void UpdateBreakpoint(int width)
+    {
+        _currentBreakpoint = width switch
+        {
+            < 576  => "XS",
+            < 768  => "SM",
+            < 992  => "MD",
+            < 1200 => "LG",
+            < 1400 => "XL",
+            _      => "XXL"
+        };
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_resizeSubscription is not null)
+        {
+            try { await _resizeSubscription.InvokeVoidAsync("dispose"); } catch { }
+            await _resizeSubscription.DisposeAsync();
+        }
+        _selfRef?.Dispose();
+    }
+}

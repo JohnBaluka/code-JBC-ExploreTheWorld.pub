@@ -1,0 +1,22 @@
+@if (!OperatingSystem.IsBrowser())
+{
+    <RadzenStack Style="padding:2rem;"
+                 Orientation="Orientation.Vertical"
+                 AlignItems="AlignItems.Center"
+                 JustifyContent="JustifyContent.Center"
+                 Gap="0.5rem">
+        <RadzenProgressBarCircular ShowValue="false"
+                                   Mode="ProgressBarMode.Indeterminate"
+                                   Size="ProgressBarCircularSize.Large" />
+        <RadzenText>Loading...</RadzenText>
+    </RadzenStack>
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

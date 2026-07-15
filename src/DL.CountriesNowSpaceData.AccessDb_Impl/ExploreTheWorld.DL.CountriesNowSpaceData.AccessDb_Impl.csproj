@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.CountriesNowSpaceData.AccessDb_Impl</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.CountriesNowSpaceData.AccessDb_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DL.CountriesNowSpaceData\ExploreTheWorld.DL.CountriesNowSpaceData.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- EntityFrameworkCore.Jet: community EF Core provider for Jet/ACE (Access) via OLE DB.
+         Requires Microsoft Access Database Engine (ACE OLEDB 12.0 or 16.0) installed.
+         Version must match the referenced EF Core version. Update when upgrading EF Core.
+         System.Data.OleDb is required on .NET Core/.NET 5+ (removed from BCL). -->
+    <PackageReference Include="EntityFrameworkCore.Jet" Version="10.0.1" />
+    <PackageReference Include="System.Data.OleDb" Version="10.0.9" />
+  </ItemGroup>
+
+</Project>

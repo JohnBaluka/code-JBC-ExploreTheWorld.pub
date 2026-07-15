@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.SqliteDbTests._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.SqliteDbTests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <!-- FluentAssertions 6.x is the last series with .NET Framework support. -->
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <!-- EF Core 3.x is the last series with .NET Framework support. Matches DL.CountriesNowSpaceData.SqliteDb_Impl._netF. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.32" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Disables xunit app-domain shadow copying, which does not copy the native
+         e_sqlite3.dll from runtimes\win-x64\native and breaks SQLitePCLRaw probing. -->
+    <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CL._netF\ExploreTheWorld.CL._netF.csproj" />
+    <ProjectReference Include="..\..\DL._netF\ExploreTheWorld.DL._netF.csproj" />
+    <ProjectReference Include="..\..\DL.CountriesNowSpaceData._netF\ExploreTheWorld.DL.CountriesNowSpaceData._netF.csproj" />
+    <ProjectReference Include="..\..\DL.CountriesNowSpaceData.SqliteDb_Impl._netF\ExploreTheWorld.DL.CountriesNowSpaceData.SqliteDb_Impl._netF.csproj" />
+  </ItemGroup>
+
+  <!--
+    No net10.0 counterpart project exists to shared-link from: the net10.0
+    IntegrationTests cover the repository against EF Core InMemory, while this project
+    covers the _netF repository against a real SQLite database file using the EF Core
+    3.x provider (CreateDbContext() only — no CreateDbContextAsync()).
+  -->
+
+</Project>

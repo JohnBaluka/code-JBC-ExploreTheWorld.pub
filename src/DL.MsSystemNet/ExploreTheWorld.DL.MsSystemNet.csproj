@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsSystemNet</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsSystemNet</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+  </ItemGroup>
+
+
+</Project>

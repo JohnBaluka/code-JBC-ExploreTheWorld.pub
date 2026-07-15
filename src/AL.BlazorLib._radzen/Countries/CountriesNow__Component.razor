@@ -1,0 +1,211 @@
+@inherits Base__RadzenComponent
+@namespace JBC.ExploreTheWorld.AL.BlazorLib.Countries
+
+@if (!Visible) return;
+
+<div id="@GetId()"
+     class="@GetCssClass()"
+     style="@GetHiddenStyle()"
+     @ref="@Element"
+     @attributes="Attributes">
+    <ErrorBoundary>
+        <ChildContent>
+            <RadzenStack style="height:100%; box-sizing:border-box;"
+                         Orientation="Orientation.Vertical"
+                         Gap="1rem"
+                         Class="p-4">
+
+                <RadzenStack Orientation="Orientation.Horizontal"
+                             AlignItems="AlignItems.Center"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H4">Countries Now Api — countriesnow.space</RadzenText>
+                    <RadzenButton Text="Clear Database"
+                                  Click="ClearDatabaseAsync"
+                                  ButtonStyle="ButtonStyle.Danger"
+                                  Size="ButtonSize.Small" />
+                </RadzenStack>
+
+                @if (_isLoading)
+                {
+                    <RadzenProgressBar Value="100"
+                                       ShowValue="false"
+                                       Mode="ProgressBarMode.Indeterminate" />
+                }
+                else if (_errorMessage != null)
+                {
+                    <RadzenAlert AlertStyle="AlertStyle.Danger"
+                                 AllowClose="false">
+                                 @_errorMessage
+                    </RadzenAlert>
+                }
+                else
+                {
+                    <div style="flex:1; min-height:0; overflow:auto;">
+                        <RadzenRow>
+                            <RadzenColumn Size="6">
+                                <RadzenStack Orientation="Orientation.Horizontal"
+                                             AlignItems="AlignItems.Center"
+                                             Gap="0.5rem"
+                                             Class="mb-2">
+                                    <RadzenText Style="margin:0"
+                                                TextStyle="TextStyle.H6">
+                                                Countries
+                                    </RadzenText>
+                                    @if (_countriesSource.HasValue)
+                                    {
+                                        <RadzenBadge BadgeStyle="@(_countriesSource == DataSource_Enum.Database ? BadgeStyle.Success : BadgeStyle.Info)"
+                                                     Text="@($"Source: {_countriesSource}")" />
+                                    }
+                                </RadzenStack>
+                                <RadzenDataGrid @ref="_countriesGrid"
+                                                @bind-Value="@_selectedCountries"
+                                                Data="@_countries"
+                                                TItem="CountryBasic_Row"
+                                                AllowFiltering="true"
+                                                FilterMode="FilterMode.SimpleWithMenu"
+                                                AllowSorting="true"
+                                                AllowPaging="true"
+                                                PageSize="20"
+                                                RowSelect="@OnCountrySelected"
+                                                SelectionMode="DataGridSelectionMode.Single"
+                                                ColumnWidth="200px">
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="CountryBasic_Row"
+                                                              Property="Country"
+                                                              Title="Country" />
+                                        <RadzenDataGridColumn TItem="CountryBasic_Row"
+                                                              Property="Iso2"
+                                                              Title="ISO2"
+                                                              Width="80px" />
+                                        <RadzenDataGridColumn TItem="CountryBasic_Row"
+                                                              Property="Iso3"
+                                                              Title="ISO3"
+                                                              Width="80px" />
+                                    </Columns>
+                                </RadzenDataGrid>
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="6">
+                                <RadzenStack Orientation="Orientation.Horizontal"
+                                             AlignItems="AlignItems.Center"
+                                             Gap="0.5rem"
+                                             Class="mb-2">
+                                    <RadzenText Style="margin:0"
+                                                TextStyle="TextStyle.H6">
+                                                States @(_selectedCountry != null ? $"— {_selectedCountry.Country}" : "")
+                                    </RadzenText>
+                                    @if (_isLoadingStates)
+                                    {
+                                        <RadzenProgressBar Style="width:100px"
+                                                           Value="100"
+                                                           ShowValue="false"
+                                                           Mode="ProgressBarMode.Indeterminate" />
+                                    }
+                                    @if (_statesSource.HasValue)
+                                    {
+                                        <RadzenBadge BadgeStyle="@(_statesSource == DataSource_Enum.Database ? BadgeStyle.Success : BadgeStyle.Info)"
+                                                     Text="@($"Source: {_statesSource}")" />
+                                    }
+                                </RadzenStack>
+
+                                @if (_statesErrorMessage != null)
+                                {
+                                    <RadzenAlert AlertStyle="AlertStyle.Danger"
+                                                 AllowClose="false">
+                                                 @_statesErrorMessage
+                                    </RadzenAlert>
+                                }
+
+                                <RadzenDataGrid Data="@_states"
+                                                TItem="CountryState_Row"
+                                                AllowFiltering="true"
+                                                FilterMode="FilterMode.SimpleWithMenu"
+                                                AllowSorting="true"
+                                                AllowPaging="true"
+                                                PageSize="20"
+                                                ColumnWidth="200px">
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="CountryState_Row"
+                                                              Property="Name"
+                                                              Title="State" />
+                                        <RadzenDataGridColumn TItem="CountryState_Row"
+                                                              Property="StateCode"
+                                                              Title="Code"
+                                                              Width="100px" />
+                                    </Columns>
+                                </RadzenDataGrid>
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </div>
+                }
+
+                @* ── Export log + options: hidden when Layout_AppService.ShowExportOptions is false ── *@
+                @if (Layout_AppService.ShowExportOptions)
+                {
+                    @* ── Log panel: fixed height ──────────────────────────────────────────── *@
+                    @* column-reverse keeps the newest line pinned to the bottom (auto-scroll). *@
+                    <div style="height:200px; flex-shrink:0; background:#000; color:#39ff14;
+                                font-family:'Consolas',monospace; font-size:0.8rem;
+                                padding:0.5rem 0.75rem; overflow-y:auto; border-radius:4px;
+                                display:flex; flex-direction:column-reverse;">
+                        <div style="white-space:pre-wrap;">@_exportLog</div>
+                    </div>
+
+                    @* ── Export options (bottom) ──────────────────────────────────────────── *@
+                    <RadzenCard style="background:#1a1a1a; border:1px solid #333; flex-shrink:0;">
+                        <RadzenStack Style="flex-wrap:wrap;"
+                                     Orientation="Orientation.Horizontal"
+                                     AlignItems="AlignItems.Center"
+                                     Gap="0.5rem">
+                            <RadzenText Style="color:#aaa; margin:0"
+                                        TextStyle="TextStyle.H6">
+                                        Export
+                            </RadzenText>
+
+                            <RadzenLabel Style="color:#ccc;"
+                                         Text="Type" />
+                            <RadzenDropDown Style="width:130px;"
+                                            @bind-Value="_exportType"
+                                            Data="@_exportTypes"
+                                            Change="@OnExportTypeChanged" />
+
+                            <RadzenLabel Style="color:#ccc;"
+                                         Text="Library" />
+                            <RadzenDropDown Style="width:120px;"
+                                            @bind-Value="_exportLibrary"
+                                            Data="@_exportLibraries"
+                                            Change="@OnExportLibraryChanged" />
+
+                            <RadzenLabel Style="color:#ccc;"
+                                         Text="@ExportPathLabel" />
+                            @* flex:1 makes the path box stretch as the panel widens, pushing the
+                               Export / Clear Log buttons to the right edge. *@
+                            <RadzenTextBox Style="flex:1; min-width:220px;"
+                                           @bind-Value="_exportFilePath"
+                                           Placeholder="@ExportPathPlaceholder" />
+
+                            <RadzenButton Text="Export"
+                                          Click="ExportAsync"
+                                          ButtonStyle="ButtonStyle.Primary"
+                                          Size="ButtonSize.Small" />
+                            <RadzenButton Text="Clear Log"
+                                          Click="ClearExportLog"
+                                          ButtonStyle="ButtonStyle.Light"
+                                          Size="ButtonSize.Small" />
+                        </RadzenStack>
+                    </RadzenCard>
+                }
+
+            </RadzenStack>
+        </ChildContent>
+        <ErrorContent Context="ex">
+            <RadzenStack Class="p-4"
+                         Gap="1rem">
+                <RadzenAlert AlertStyle="AlertStyle.Danger"
+                             AllowClose="false">
+                    <strong>An error occurred:</strong> @ex.Message
+                </RadzenAlert>
+            </RadzenStack>
+        </ErrorContent>
+    </ErrorBoundary>
+</div>

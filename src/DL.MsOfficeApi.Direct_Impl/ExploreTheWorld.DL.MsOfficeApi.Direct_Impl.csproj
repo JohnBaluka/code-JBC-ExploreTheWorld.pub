@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsOfficeApi.Direct_Impl</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsOfficeApi.Direct_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+  </ItemGroup>
+
+  <!-- Microsoft.CSharp (dynamic COM dispatch) ships in the .NET 10 shared framework;
+       only the ._netF twin needs the explicit PackageReference. No NetOffice dependency:
+       the Direct method runs the VBA writer macros via late-bound Application.Run. -->
+
+</Project>

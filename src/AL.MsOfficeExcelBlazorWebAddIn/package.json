@@ -1,0 +1,25 @@
+{
+  "name": "exploretherworld.al.msofficeexcelblazorwebaddin",
+  "version": "1.0.0",
+  "description": "Explore the World Excel Blazor Web Add-in",
+  "license": "MIT",
+  "author": "John Baluka",
+  "config": {
+    "app_to_debug": "excel",
+    "app_type_to_debug": "desktop",
+    "dev_server_port": 7101
+  },
+  "scripts": {
+    "start-local": "office-addin-debugging start ..\\AL.MsOfficeExcelBlazorWebAddIn\\Assets\\manifest.local.xml",
+    "stop": "office-addin-debugging stop manifest.xml",
+    "validate-local": "office-addin-manifest validate ..\\AL.MsOfficeExcelBlazorWebAddIn\\Assets\\manifest.local.xml"
+  },
+  "devDependencies": {
+    "@types/office-js-preview": "^1.0.708",
+    "office-addin-debugging": "^6.1.1",
+    "office-addin-manifest": "^2.1.5"
+  },
+  "overrides": {
+    "strip-bom": "4.0.0"
+  }
+}

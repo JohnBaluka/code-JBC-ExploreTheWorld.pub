@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.AL.SaveAsJson.ConsoleApp</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.AL.SaveAsJson.ConsoleApp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BL\ExploreTheWorld.BL.csproj" />
+    <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+    <!-- Office export factory + DL repo _Impl references come from the shared composition project
+         (the same one the WinForms/MAUI hosts use) instead of a hand-copied factory. -->
+    <ProjectReference Include="..\DL.MsOfficeApi_Impl\ExploreTheWorld.DL.MsOfficeApi_Impl.csproj" />
+  </ItemGroup>
+
+</Project>

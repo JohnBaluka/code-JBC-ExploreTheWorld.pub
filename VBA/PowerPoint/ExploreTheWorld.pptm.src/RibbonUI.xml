@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui">
+  <ribbon>
+    <tabs>
+      <tab id="tabETW" label="ETW (VBA)">
+        <group id="grpJsonExport" label="Export">
+          <button id="btnSaveAsJson" label="Save as JSON (Direct)" imageMso="FileSaveAs" size="large" onAction="SaveAsJson_OnClick" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

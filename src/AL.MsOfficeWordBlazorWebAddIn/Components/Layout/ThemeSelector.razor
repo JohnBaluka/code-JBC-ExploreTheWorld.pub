@@ -1,0 +1,13 @@
+<RadzenStack Orientation="Orientation.Vertical"
+             AlignItems="AlignItems.Center"
+             Gap="0.5rem">
+    <RadzenDropDown @bind-Value="_theme"
+                    Style="width:160px;"
+                    Data="@_themes" />
+    <RadzenText TextStyle="TextStyle.Caption">Reload the page after changing theme.</RadzenText>
+</RadzenStack>
+
+@code {
+    private string _theme = "default";
+    private readonly string[] _themes = ["default", "dark", "material", "humanistic", "software", "standard", "fluent"];
+}

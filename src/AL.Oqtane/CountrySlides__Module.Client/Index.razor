@@ -1,0 +1,10 @@
+@namespace JBC.ExploreTheWorld.AL.Oqtane.CountrySlides
+@inherits ModuleBase
+
+@* Oqtane panes are auto-height (unlike the web app shell where the page passes height:100%),
+   so give the slideshow an explicit viewport-based height or reveal.js collapses to 0px. *@
+<CountrySlides__Component Style="height:calc(100vh - 240px);min-height:480px;" />
+
+@code {
+    public override string RenderMode => RenderModes.Interactive;
+}

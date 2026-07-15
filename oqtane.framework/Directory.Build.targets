@@ -1,0 +1,9 @@
+<Project>
+  <!--
+    SixLabors.ImageSharp is used by Oqtane.Server under the Six Labors Split License open-source terms.
+    Oqtane is MIT licensed and hosted publicly on GitHub (https://github.com/oqtane/oqtane.framework).
+    The commercial license check target is overridden here because the free open-source tier does not
+    provide a license key/file — the Six Labors Split License permits this use without one.
+  -->
+  <Target Name="SixLabors_ValidateLicense" />
+</Project>

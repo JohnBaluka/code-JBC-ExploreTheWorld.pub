@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.OfficeAddinTests._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.OfficeAddinTests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <!-- FluentAssertions 6.x is the last series with .NET Framework support. -->
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="FlaUI.Core" Version="5.0.0" />
+    <PackageReference Include="FlaUI.UIA3" Version="5.0.0" />
+    <!-- NetOfficeFw NuGet packages (net10.0 pattern uses project references to code-zgh-NetOfficeFw__NetOffice__10). -->
+    <PackageReference Include="NetOfficeFw.Core" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Office" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Word" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Excel" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.10" />
+  </ItemGroup>
+
+  <!-- Link shared test source from OfficeAddinTests (shared-link compilation pattern). -->
+  <ItemGroup>
+    <Compile Include="..\OfficeAddinTests\**\*.cs">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="..\OfficeAddinTests\obj\**" />
+    <Compile Remove="..\OfficeAddinTests\bin\**" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+</Project>

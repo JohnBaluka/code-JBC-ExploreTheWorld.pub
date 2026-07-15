@@ -1,0 +1,46 @@
+/* Country Slides styles live in their own file so the Oqtane module can load
+   them without these app-shell globals (html/body/.rz-layout overrides). */
+@import url('country-slides.css');
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--rz-body-font-family, system-ui, sans-serif);
+    background-color: var(--rz-body-background-color, #fff);
+    color: var(--rz-base-900, #212529);
+}
+
+/* WASM standalone root */
+#app {
+    height: 100%;
+}
+
+/* Bound the layout to the viewport so pages that use RadzenSplitter
+   get a constrained parent. Radzen defaults to min-height:100vh which
+   overflows RadzenBody when the header is present. */
+.rz-layout {
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Prevent the body area from scrolling at the layout level;
+   page content manages its own scroll (via splitter panes or overflow containers). */
+.rz-body {
+    overflow: hidden;
+}
+
+/* Terminal-style log panel used by Countries Now page */
+.etw-log-panel {
+    background-color: #0c0c0c;
+    color: #00cc00;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* Country Slides (reveal.js) styles: see country-slides.css (@imported above). */

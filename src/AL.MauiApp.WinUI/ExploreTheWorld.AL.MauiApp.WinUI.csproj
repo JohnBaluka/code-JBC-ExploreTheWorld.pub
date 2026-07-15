@@ -1,0 +1,86 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>JBC.ExploreTheWorld.AL.MauiApp.WinUI</RootNamespace>
+    <AssemblyName>JBC.ExploreTheWorld.AL.MauiApp.WinUI</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseMaui>true</UseMaui>
+    <MauiXamlInflator>SourceGen</MauiXamlInflator>
+    <EnableDefaultCssItems>false</EnableDefaultCssItems>
+    <!-- We do not want XAML files to be processed as .NET MAUI XAML, but rather WinUI XAML. -->
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <!-- Run as unpackaged .exe so FlaUI can launch it directly -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <!-- Plain `dotnet build` (no -p:Platform) defaults to AnyCPU; pin the x64 RID so the
+         WindowsAppSDK self-contained targets resolve (matches the old single-project behavior). -->
+    <RuntimeIdentifier Condition="'$(Platform)' == 'AnyCPU'">win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.80" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.80" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AL.MauiLib\ExploreTheWorld.AL.MauiLib.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceApi\ExploreTheWorld.DL.CountriesNowSpaceApi.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.SqliteDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.SqliteDb_Impl.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.SqlServerDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.SqlServerDb_Impl.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.InMemoryDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.InMemoryDb_Impl.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.AccessDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.AccessDb_Impl.csproj" />
+    <!-- Composition project: owns the Office export factory + Save-As-JSON writers and the DL
+         repo _Impl references (mirrors how the WinForms hosts reference it). -->
+    <ProjectReference Include="..\DL.MsOfficeApi_Impl\ExploreTheWorld.DL.MsOfficeApi_Impl.csproj" />
+  </ItemGroup>
+
+  <!-- Shared-link the UI-free export/watcher helpers from AL.WinFormsLib (same pattern as
+       AL.WinFormsLib._netF) so the WinUI head reuses them without referencing the WinForms
+       library. The export factory + Save-As-JSON writers now live in the composition project
+       referenced above; MauiWatcher_AppService reaches the writer via the provider below. -->
+  <ItemGroup>
+    <Compile Include="..\AL.WinFormsLib\_Services\OfficeExport_AppService.cs" Link="_Services\OfficeExport_AppService.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Watcher\WatcherComHelper.cs" Link="_Watcher\WatcherComHelper.cs" />
+    <Compile Include="..\AL.WinFormsLib\_Watcher\MsOfficeSaveAsJsonWriterProvider.cs" Link="_Watcher\MsOfficeSaveAsJsonWriterProvider.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <!--
+    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+    Tools extension to be activated for this project even if the Windows App SDK Nuget
+    package has not yet been restored.
+  -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+
+  <!--
+    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
+    Explorer "Package and Publish" context menu entry to be enabled for this project even if
+    the Windows App SDK Nuget package has not yet been restored.
+  -->
+  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+  </PropertyGroup>
+
+</Project>

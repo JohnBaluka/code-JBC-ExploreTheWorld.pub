@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp
+          xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+          xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+          xsi:type="TaskPaneApp">
+
+  <Id>E2F3A4B5-C6D7-8E9F-0A1B-2C3D4E5F6A7B</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>John Baluka</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="ETW MsOfficeExcelBlazorWebAddIn" />
+  <Description DefaultValue="Explore the World Excel Add-in using Blazor Server+WASM hybrid"/>
+  <IconUrl DefaultValue="https://localhost:7101/Images/globe-32.png" />
+  <HighResolutionIconUrl DefaultValue="https://localhost:7101/Images/globe-64.png"/>
+  <SupportUrl DefaultValue="https://github.com/JohnBaluka" />
+  <AppDomains>
+    <AppDomain>AppDomain1</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Workbook" />
+  </Hosts>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="SharedRuntime" MinVersion="1.1"/>
+      <Set Name="ExcelApi" MinVersion="1.7"/>
+      <Set Name="DialogApi" MinVersion="1.2"/>
+      <Set Name="AddinCommands" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://localhost:7101" />
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Workbook">
+        <Runtimes>
+          <Runtime resid="ESharedUrl" lifetime="long" />
+        </Runtimes>
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="ETitle"/>
+            <Description resid="EDesc"/>
+            <LearnMoreUrl resid="ELearn"/>
+          </GetStarted>
+
+          <FunctionFile resid="ESharedUrl" />
+
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <CustomTab id="ETWExcelBlazorTab">
+              <Group id="ETW.Excel.Blazor.CountriesApiGroup">
+                <Label resid="ECountriesApiGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="ECountries16" />
+                  <bt:Image size="32" resid="ECountries32" />
+                  <bt:Image size="80" resid="ECountries80" />
+                </Icon>
+
+                <Control xsi:type="Button" id="ETW.Excel.Blazor.CountriesApi.Button">
+                  <Label resid="ECountriesApiLabel" />
+                  <Supertip>
+                    <Title resid="ECountriesApiLabel" />
+                    <Description resid="ECountriesApiTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="ECountries16" />
+                    <bt:Image size="32" resid="ECountries32" />
+                    <bt:Image size="80" resid="ECountries80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ETWExcelBlazorTaskpaneID</TaskpaneId>
+                    <SourceLocation resid="ECountriesApiUrl" />
+                  </Action>
+                </Control>
+              </Group>
+
+              <Group id="ETW.Excel.Blazor.WatcherGroup">
+                <Label resid="EWatcherGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="EWatcher16" />
+                  <bt:Image size="32" resid="EWatcher32" />
+                  <bt:Image size="80" resid="EWatcher80" />
+                </Icon>
+
+                <Control xsi:type="Button" id="ETW.Excel.Blazor.Watcher.Button">
+                  <Label resid="EWatcherLabel" />
+                  <Supertip>
+                    <Title resid="EWatcherLabel" />
+                    <Description resid="EWatcherTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="EWatcher16" />
+                    <bt:Image size="32" resid="EWatcher32" />
+                    <bt:Image size="80" resid="EWatcher80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ETWExcelBlazorTaskpaneID</TaskpaneId>
+                    <SourceLocation resid="EEventsUrl" />
+                  </Action>
+                </Control>
+              </Group>
+
+              <Group id="ETW.Excel.Blazor.ExportGroup">
+                <Label resid="EExportGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="EJson16" />
+                  <bt:Image size="32" resid="EJson32" />
+                  <bt:Image size="80" resid="EJson80" />
+                </Icon>
+
+                <Control xsi:type="Button" id="ETW.Excel.Blazor.SaveAsJson.Button">
+                  <Label resid="ESaveAsJsonLabel" />
+                  <Supertip>
+                    <Title resid="ESaveAsJsonLabel" />
+                    <Description resid="ESaveAsJsonTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="EJson16" />
+                    <bt:Image size="32" resid="EJson32" />
+                    <bt:Image size="80" resid="EJson80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ETWExcelBlazorTaskpaneID</TaskpaneId>
+                    <SourceLocation resid="ESaveAsJsonUrl" />
+                  </Action>
+                </Control>
+              </Group>
+              <Label resid="ETabLabel"/>
+            </CustomTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="ECountries16" DefaultValue="https://localhost:7101/Images/globe-16.png" />
+        <bt:Image id="ECountries32" DefaultValue="https://localhost:7101/Images/globe-32.png" />
+        <bt:Image id="ECountries80" DefaultValue="https://localhost:7101/Images/globe-80.png" />
+        <bt:Image id="EWatcher16" DefaultValue="https://localhost:7101/Images/watch-16.png" />
+        <bt:Image id="EWatcher32" DefaultValue="https://localhost:7101/Images/watch-32.png" />
+        <bt:Image id="EWatcher80" DefaultValue="https://localhost:7101/Images/watch-80.png" />
+        <bt:Image id="EJson16" DefaultValue="https://localhost:7101/Images/braces-16.png" />
+        <bt:Image id="EJson32" DefaultValue="https://localhost:7101/Images/braces-32.png" />
+        <bt:Image id="EJson80" DefaultValue="https://localhost:7101/Images/braces-80.png" />
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="ESharedUrl" DefaultValue="https://localhost:7101/" />
+        <bt:Url id="ESaveAsJsonUrl" DefaultValue="https://localhost:7101/save-as-json" />
+        <bt:Url id="ECountriesApiUrl" DefaultValue="https://localhost:7101/countries-now" />
+        <bt:Url id="EEventsUrl" DefaultValue="https://localhost:7101/events" />
+        <bt:Url id="ELearn" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812" />
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="ETitle" DefaultValue="Get started with the Explore the World Excel Add-in!" />
+        <bt:String id="ETabLabel" DefaultValue="ETW (Web)" />
+        <bt:String id="ECountriesApiGroupLabel" DefaultValue="Countries API" />
+        <bt:String id="EWatcherGroupLabel" DefaultValue="Watcher" />
+        <bt:String id="EExportGroupLabel" DefaultValue="Export" />
+        <bt:String id="ESaveAsJsonLabel" DefaultValue="Save as JSON (Blazor)" />
+        <bt:String id="ECountriesApiLabel" DefaultValue="Countries Pane (Blazor)" />
+        <bt:String id="EWatcherLabel" DefaultValue="Watcher Pane (Blazor)" />
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="EDesc" DefaultValue="The Explore the World Excel Add-in loaded. Click a button to open the taskpane." />
+        <bt:String id="ESaveAsJsonTip" DefaultValue="Save the active Excel workbook as JSON" />
+        <bt:String id="ECountriesApiTip" DefaultValue="Open the Countries Now API browser" />
+        <bt:String id="EWatcherTip" DefaultValue="Open the Excel event watcher" />
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+
+</OfficeApp>

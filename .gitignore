@@ -1,0 +1,15 @@
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+*.log
+
+obj
+bin
+.vs
+packages
+node_modules
+# Office lock files
+*.laccdb
+*_VCSBackup*.accdb
+~$*

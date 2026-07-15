@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "ExploreTheWorld.AL.BlazorLib.Server._radzen": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:7010;http://localhost:7011"
+    }
+  }
+}

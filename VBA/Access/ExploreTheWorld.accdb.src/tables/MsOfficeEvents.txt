@@ -1,0 +1,98 @@
+﻿GUID	Row_ID	Name	Category	Word	Excel	PowerPoint	Log
+{guid {07CED099-A431-48E7-BAB6-67ADDEC74408}}	11	DocumentChange	Document	True	False	False	True
+{guid {0DB1BA5B-862D-429F-8396-D90EA0B85F69}}	81	WorkbookAfterXmlExport	XML	False	True	False	True
+{guid {0E32FD1C-A411-4745-9C17-2880C241B25A}}	22	MailMergeDataSourceValidate	Mail Merge	True	False	False	True
+{guid {12B8EFD4-CE3E-47DA-801B-22621C74B8D1}}	17	MailMergeAfterMerge	Mail Merge	True	False	False	True
+{guid {1BFA2DA6-61AD-4560-A51B-94A254752141}}	7	ColorSchemeChanged	Presentation	False	False	True	True
+{guid {27179E2B-955A-40C6-B7DF-EB51BD3F4693}}	94	WorkbookPivotTableOpenConnection	PivotTable	False	True	False	True
+{guid {271E5F45-A9D8-43E2-AF75-EDCC7B860140}}	42	ProtectedViewWindowOpen	Protected View	True	True	True	True
+{guid {299D4872-5DB4-4030-A956-F346A923F034}}	28	NewWorkbook	Workbook	False	True	False	True
+{guid {2C58F9ED-45A8-47FF-8BD2-240231F1E059}}	83	WorkbookBeforeClose	Workbook	False	True	False	True
+{guid {2EB2B7AA-C7DC-4BFC-B9C1-7BBC39B02546}}	65	SlideShowNextBuild	Slide Show	False	False	True	True
+{guid {30A2CD7B-7D5C-4B92-9E87-4AE073AD0FF4}}	75	WindowSelectionChange	Window	True	False	True	True
+{guid {32251CF1-DE8B-4186-87AB-EFF627A42ED0}}	63	SlideShowBegin	Slide Show	False	False	True	True
+{guid {33CB1A8A-75FB-4741-9891-445A55698BB5}}	80	WorkbookAfterSave	Workbook	False	True	False	True
+{guid {34590BBF-8889-40B1-A863-1C088DD4CBB7}}	87	WorkbookBeforeXmlImport	XML	False	True	False	True
+{guid {38138024-7F41-43E6-B9DC-616151E69C2F}}	72	WindowBeforeRightClick	Window	True	False	True	True
+{guid {38ECC54E-5D64-4AB5-B288-9F9EEC5B90CA}}	55	SheetPivotTableAfterValueChange	PivotTable	False	True	False	True
+{guid {3DCACD9E-C8C1-4F96-AA9E-495A09D609C0}}	88	WorkbookDeactivate	Workbook	False	True	False	True
+{guid {3E03FD8D-D020-4461-BB7C-7C3B24ADCB6E}}	54	SheetLensGalleryRenderComplete	Worksheet	False	True	False	True
+{guid {40F79094-D7FC-4AD1-B32C-CABFBEB5DF13}}	74	WindowResize	Window	False	True	False	True
+{guid {4349AE68-85AC-400D-956C-DE2DCBDDCBD3}}	2	AfterCalculate	Calculation	False	True	False	True
+{guid {43AF8E5D-D890-40C3-99CF-388836DE8A46}}	91	WorkbookNewSheet	Worksheet	False	True	False	True
+{guid {4539EAAD-FA46-430F-BD66-4715F13BCB18}}	35	PresentationPrint	Presentation	False	False	True	True
+{guid {469981F1-BCCF-4A75-983D-37D48F9B16BE}}	85	WorkbookBeforeSave	Workbook	False	True	False	True
+{guid {47247E9A-A72D-40FA-A0D1-DC86A1B55AAB}}	46	SheetActivate	Worksheet	False	True	False	True
+{guid {4927A52F-AE85-4435-9005-3A7D6A149DDE}}	24	MailMergeWizardSendToCustom	Mail Merge	True	False	False	True
+{guid {4B4F75CC-3D99-47EA-AB9D-E8DCA1D28A10}}	61	SheetTableUpdate	Table	False	True	False	True
+{guid {505658F1-D6C6-4146-B278-9BA86B046E07}}	95	WorkbookRowsetComplete	Data	False	True	False	True
+{guid {53DA9769-26E6-4D36-BB88-5A187FE60BB8}}	51	SheetChange	Worksheet	False	True	False	True
+{guid {54E4D98A-CF3F-4F7B-8F1A-105E1CD6963D}}	62	SlideSelectionChanged	Slide	False	False	True	True
+{guid {56129E2E-13E4-41B4-8243-6A2AF5A497CB}}	14	EPostageInsert	E-Postage	True	False	False	True
+{guid {57558EBB-EB6B-4186-81C8-4ADEF153BA5B}}	66	SlideShowNextClick	Slide Show	False	False	True	True
+{guid {59DFA5FB-A0C1-494D-B32A-7A1AE9C77617}}	92	WorkbookOpen	Workbook	False	True	False	True
+{guid {5B710625-DAFE-4C4D-A0EF-3E8ED8DEDEED}}	70	WindowActivate	Window	True	True	True	True
+{guid {5D3140D6-C484-4429-B0F5-F7B5D3CB24D3}}	50	SheetCalculate	Worksheet	False	True	False	True
+{guid {61C655A6-50ED-451A-8C42-BBB12CAB76BB}}	15	EPostageInsertEx	E-Postage	True	False	False	True
+{guid {625EF773-A1CC-4DBB-8A03-032C0C766F98}}	31	PresentationClose	Presentation	False	False	True	True
+{guid {634494D8-8C67-45B0-B0BD-069DDBAC03EC}}	5	AfterPresentationOpen	Presentation	False	False	True	True
+{guid {63C96599-AE86-48B0-9A1D-0D43249CE5D9}}	76	WindowSize	Window	True	False	False	True
+{guid {647358D5-0DB4-4993-AF0A-1D22F9AFA045}}	79	WorkbookAddinUninstall	Workbook/Add-in	False	True	False	True
+{guid {67821C6F-D78E-4CA3-B074-396DEE04BC18}}	60	SheetSelectionChange	Worksheet	False	True	False	True
+{guid {6A4379A9-5FC0-42A3-AA08-3E1A4AB43369}}	58	SheetPivotTableBeforeDiscardChanges	PivotTable	False	True	False	True
+{guid {6AF9CE4F-6947-4CD8-9995-4291667BA949}}	40	ProtectedViewWindowBeforeEdit	Protected View	True	True	True	True
+{guid {6DAEE78A-26FD-495A-8B68-3A7B9700B59C}}	16	EPostagePropertyDialog	E-Postage	True	False	False	True
+{guid {6F0EFC96-438D-4C8A-B1B4-C064E0F87840}}	73	WindowDeactivate	Window	True	True	True	True
+{guid {70F6D7AE-7DEE-4B20-B58F-38005D1CFE95}}	3	AfterDragDropOnSlide	Slide	False	False	True	True
+{guid {7562B6AE-0C96-4A5C-9942-2B413537DFFF}}	64	SlideShowEnd	Slide Show	False	False	True	True
+{guid {75BAC653-722B-45FD-8A4C-0EBB514B889C}}	38	ProtectedViewWindowActivate	Protected View	True	True	True	True
+{guid {792665AC-FB67-40A6-83E6-8EED2CCBB6EF}}	89	WorkbookModelChange	Data Model	False	True	False	True
+{guid {7D30366D-13B2-4700-8177-FDB1BF0BCB0B}}	53	SheetFollowHyperlink	Worksheet	False	True	False	True
+{guid {825F52D5-3E5D-4F59-B74C-36C2693871B8}}	21	MailMergeDataSourceLoad	Mail Merge	True	False	False	True
+{guid {86452B7E-B397-40CD-B720-C720A2C42F38}}	57	SheetPivotTableBeforeCommitChanges	PivotTable	False	True	False	True
+{guid {8A68BE77-001C-48ED-B78E-F80567A00075}}	18	MailMergeAfterRecordMerge	Mail Merge	True	False	False	True
+{guid {920D4651-096B-4898-80FB-0CEE8D2D3DA0}}	32	PresentationCloseFinal	Presentation	False	False	True	True
+{guid {92BECFEB-0585-48B7-8F62-2F4055DB5891}}	48	SheetBeforeDoubleClick	Worksheet	False	True	False	True
+{guid {95950F10-D7DE-4A92-AAE4-CBB0E4049CC8}}	27	NewPresentation	Presentation	False	False	True	True
+{guid {986AE189-CB8F-4150-AB57-AA6F2D17FF62}}	12	DocumentOpen	Document	True	False	False	True
+{guid {9AA36E59-F22E-44A9-A56D-BF071544A831}}	96	WorkbookSync	Workbook	False	True	False	True
+{guid {A02F3FCF-917D-4694-B662-500F279786D6}}	68	SlideShowOnNext	Slide Show	False	False	True	True
+{guid {A6499DA3-71D5-4958-AAD0-A52E8498BD92}}	49	SheetBeforeRightClick	Worksheet	False	True	False	True
+{guid {A872E1F0-1B60-4ED0-B9BC-03866CC99E43}}	30	PresentationBeforeSave	Presentation	False	False	True	True
+{guid {AABCD336-E24D-41E4-A365-6AE22391DD57}}	10	DocumentBeforeSave	Document	True	False	False	True
+{guid {AC6EFF9E-B2E1-4303-A095-290A49763FCC}}	36	PresentationSave	Presentation	False	False	True	True
+{guid {AD2D6D73-E949-47F5-981D-518586B832C6}}	26	NewDocument	Document	True	False	False	True
+{guid {AFD02CB9-9FB5-407F-B042-C5FA9EA43509}}	93	WorkbookPivotTableCloseConnection	PivotTable	False	True	False	True
+{guid {B0264588-C303-48E0-B5A9-C3A0D7E9B0AE}}	90	WorkbookNewChart	Chart	False	True	False	True
+{guid {B09864FE-278F-4D03-8EF4-0698752AF8EE}}	44	ProtectedViewWindowSize	Protected View	True	False	False	True
+{guid {B1DB4992-1A3E-4BAF-911B-1C51C58E644E}}	37	PresentationSync	Presentation	False	False	True	True
+{guid {B25AC350-0ADB-4D64-B595-734EAD27C71A}}	47	SheetBeforeDelete	Worksheet	False	True	False	True
+{guid {B3211553-27BE-4EE1-80BF-EBD69BFC1363}}	97	XMLSelectionChange	XML	True	False	False	True
+{guid {B3331AEF-A9D6-4BF2-B77D-DEEB0E9A6BA9}}	43	ProtectedViewWindowResize	Protected View	False	True	False	True
+{guid {B3592CD6-1EB5-43DA-929B-7100092A489A}}	67	SlideShowNextSlide	Slide Show	False	False	True	True
+{guid {B3869989-3A65-4A60-8B59-D136B7E0E86E}}	34	PresentationOpen	Presentation	False	False	True	True
+{guid {B46ACE80-2EE0-44B3-A7DE-37205F4F8272}}	59	SheetPivotTableUpdate	PivotTable	False	True	False	True
+{guid {B4DFB445-9373-46BF-9EA0-CAE46B854D49}}	23	MailMergeDataSourceValidate2	Mail Merge	True	False	False	True
+{guid {B6EA41AC-2C45-46D3-BA95-FC3F382926C3}}	13	DocumentSync	Document	True	False	False	True
+{guid {C0A0201C-BD3D-4123-ABDC-E69C17550043}}	9	DocumentBeforePrint	Document	True	False	False	True
+{guid {C190CF68-413B-474E-8440-95D6FABFD1C1}}	20	MailMergeBeforeRecordMerge	Mail Merge	True	False	False	True
+{guid {C2F39967-1F5F-4594-9E67-36FFFFEA8ADD}}	78	WorkbookAddinInstall	Workbook/Add-in	False	True	False	True
+{guid {C53E8AA7-7A42-433A-B459-6195DCB4BB4A}}	71	WindowBeforeDoubleClick	Window	True	False	True	True
+{guid {CEA8688A-8BDC-4557-B8F4-920C168FE1CA}}	84	WorkbookBeforePrint	Workbook	False	True	False	True
+{guid {CECAE69C-B7CC-4377-B4D6-3949DDA0F2DA}}	41	ProtectedViewWindowDeactivate	Protected View	True	True	True	True
+{guid {D17A0144-E92A-4FA9-ABEA-8BDE56F580E2}}	39	ProtectedViewWindowBeforeClose	Protected View	True	True	True	True
+{guid {D353B8D4-786C-4326-96F1-1DA71BB33AA4}}	29	PresentationBeforeClose	Presentation	False	False	True	True
+{guid {D8491236-0D54-4073-961B-86BF2028D22F}}	86	WorkbookBeforeXmlExport	XML	False	True	False	True
+{guid {D9D9A2A7-C388-4180-97D1-64BB4D5AA3B2}}	98	XMLValidationError	XML	True	False	False	True
+{guid {DBA683FB-DEA0-4DD4-95AB-31237474F949}}	8	DocumentBeforeClose	Document	True	False	False	True
+{guid {DCCE6399-652B-4565-A860-C7101081192B}}	82	WorkbookAfterXmlImport	XML	False	True	False	True
+{guid {E67A104F-5291-47D2-8337-111DAC8F3095}}	6	AfterShapeSizeChange	Shape	False	False	True	True
+{guid {E8197547-5CB9-4E32-AAA7-0EC60B83114C}}	56	SheetPivotTableBeforeAllocateChanges	PivotTable	False	True	False	True
+{guid {E8FCF3BF-0D9D-4B53-B5F2-D3F6AC1682B6}}	45	Quit	Application	True	False	False	True
+{guid {E90F8B32-2BF0-4A87-B13A-B1D861E68E9A}}	77	WorkbookActivate	Workbook	False	True	False	True
+{guid {EA66D8D2-A662-4905-8FCA-1792E6988BBD}}	19	MailMergeBeforeMerge	Mail Merge	True	False	False	True
+{guid {F4080799-3081-4D20-A1BF-840C05705AEA}}	25	MailMergeWizardStateChange	Mail Merge	True	False	False	True
+{guid {F453C0E7-3DEF-47AF-B105-1BA443184B31}}	4	AfterNewPresentation	Presentation	False	False	True	True
+{guid {F7080B09-C72F-42D0-8942-75DCC6BB8A44}}	52	SheetDeactivate	Worksheet	False	True	False	True
+{guid {FBEC83F1-CF4E-4F39-8452-AE95138D3CE9}}	69	SlideShowOnPrevious	Slide Show	False	False	True	True
+{guid {FD675B85-CE6C-4653-92DE-F3826937A621}}	33	PresentationNewSlide	Slide	False	False	True	True

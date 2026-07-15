@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsOfficeApi_Impl._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsOfficeApi_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="NetOfficeFw.Core" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Excel" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Word" Version="1.9.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DL._netF\ExploreTheWorld.DL._netF.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.OpenXml_Impl._netF\ExploreTheWorld.DL.MsOfficeApi.OpenXml_Impl._netF.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.NetOffice_Impl._netF\ExploreTheWorld.DL.MsOfficeApi.NetOffice_Impl._netF.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.Interop_Impl._netF\ExploreTheWorld.DL.MsOfficeApi.Interop_Impl._netF.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.Dynamic_Impl._netF\ExploreTheWorld.DL.MsOfficeApi.Dynamic_Impl._netF.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.Direct_Impl._netF\ExploreTheWorld.DL.MsOfficeApi.Direct_Impl._netF.csproj" />
+  </ItemGroup>
+
+  <!-- Shared-link the export factory, Save-As-JSON writers, and dispatcher from the net10
+       composition project (shared-link compilation pattern). -->
+  <ItemGroup>
+    <Compile Include="..\DL.MsOfficeApi_Impl\MsOfficeExportRepoFactory.cs" Link="MsOfficeExportRepoFactory.cs" />
+    <Compile Include="..\DL.MsOfficeApi_Impl\MsOfficeSaveAsJsonWriter.cs" Link="MsOfficeSaveAsJsonWriter.cs" />
+    <Compile Include="..\DL.MsOfficeApi_Impl\_JsonWriters\MsWord_JsonWriter.cs" Link="_JsonWriters\MsWord_JsonWriter.cs" />
+    <Compile Include="..\DL.MsOfficeApi_Impl\_JsonWriters\MsExcel_JsonWriter.cs" Link="_JsonWriters\MsExcel_JsonWriter.cs" />
+    <Compile Include="..\DL.MsOfficeApi_Impl\_JsonWriters\MsPowerPoint_JsonWriter.cs" Link="_JsonWriters\MsPowerPoint_JsonWriter.cs" />
+    <Compile Include="..\DL.MsOfficeApi_Impl\_JsonWriters\MsOfficeJsonWriter_Helper.cs" Link="_JsonWriters\MsOfficeJsonWriter_Helper.cs" />
+  </ItemGroup>
+</Project>

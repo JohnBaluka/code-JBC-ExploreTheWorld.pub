@@ -1,0 +1,44 @@
+@namespace JBC.ExploreTheWorld.AL.Oqtane.Theme
+@inherits MenuBase
+
+<RadzenPanelMenu>
+    @foreach (var menuPage in _menuPages.Where(item => item.Level == 0))
+    {
+        @RenderMenuItem(menuPage)
+    }
+</RadzenPanelMenu>
+
+@code {
+    private List<Page> _menuPages = new();
+
+    protected override void OnParametersSet()
+    {
+        // MenuPages re-evaluates page permissions on every access; snapshot it once per render.
+        _menuPages = MenuPages.ToList();
+    }
+
+    private RenderFragment RenderMenuItem(Page menuPage) => __builder =>
+    {
+        <RadzenPanelMenuItem Text="@menuPage.Name"
+                             Icon="@GetIcon(menuPage)"
+                             Path="@(menuPage.IsClickable ? GetUrl(menuPage) : null)"
+                             Target="@GetTarget(menuPage)"
+                             Match="@(string.IsNullOrEmpty(menuPage.Path) ? NavLinkMatch.All : NavLinkMatch.Prefix)">
+            @foreach (var childPage in _menuPages.Where(item => item.ParentId == menuPage.PageId))
+            {
+                @RenderMenuItem(childPage)
+            }
+        </RadzenPanelMenuItem>
+    };
+
+    // Radzen icons are Material Symbols names. Map the well-known ExploreTheWorld pages to the
+    // same icons the Blazor web app NavMenu uses; otherwise pass the page icon through only when
+    // it is already a plain Material name (Oqtane CSS-class icons like "oi oi-home" are skipped).
+    private static string? GetIcon(Page menuPage) => menuPage.Path switch
+    {
+        "" => "home",
+        "countries-now" => "public",
+        "country-slides" => "slideshow",
+        _ => string.IsNullOrEmpty(menuPage.Icon) || menuPage.Icon.Contains(' ') ? null : menuPage.Icon
+    };
+}

@@ -1,0 +1,12 @@
+/* ExploreTheWorld Oqtane theme overrides (loaded as a theme Stylesheet resource). */
+
+/* Header matches the sidebar. Redefining the Radzen variables (rather than hardcoding
+   colors) keeps the header/sidebar in sync in every Radzen theme the site setting can
+   select (default, dark, material, ...). Element-scoped variables beat the :root
+   definitions in the Radzen theme CSS regardless of stylesheet load order. */
+.rz-layout > .rz-header {
+    --rz-header-background-color: var(--rz-sidebar-background-color);
+    --rz-header-color: var(--rz-sidebar-color);
+    --rz-sidebar-toggle-background-color: transparent;
+    --rz-sidebar-toggle-color: var(--rz-sidebar-color);
+}

@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsSystemNet._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsSystemNet</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL._netF\ExploreTheWorld.CL._netF.csproj" />
+    <ProjectReference Include="..\DL._netF\ExploreTheWorld.DL._netF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Net.Http.Json" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\DL.MsSystemNet\**\*.cs">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="..\DL.MsSystemNet\obj\**" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+</Project>

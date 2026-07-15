@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.AL._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.AL</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BL._netF\ExploreTheWorld.BL._netF.csproj" />
+    <ProjectReference Include="..\CL._netF\ExploreTheWorld.CL._netF.csproj" />
+    <ProjectReference Include="..\DL._netF\ExploreTheWorld.DL._netF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.9" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Net.Http.Json" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\AL\**\*.cs">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="..\AL\obj\**" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+</Project>

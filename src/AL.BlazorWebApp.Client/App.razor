@@ -1,0 +1,20 @@
+@namespace JBC.ExploreTheWorld.AL.BlazorWebApp.Client
+@using JBC.ExploreTheWorld.AL.BlazorLib
+@using JBC.ExploreTheWorld.AL.BlazorLib.Countries
+@using Microsoft.AspNetCore.Components.Routing
+@using System.Reflection
+
+<Router AppAssembly="@typeof(App).Assembly"
+        AdditionalAssemblies="@(new[] { typeof(CountriesNow__Page).Assembly })">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData"
+                   DefaultLayout="@typeof(Main_Layout)" />
+        <FocusOnNavigate RouteData="@routeData"
+                         Selector="h1" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(Main_Layout)">
+            <p>Page not found.</p>
+        </LayoutView>
+    </NotFound>
+</Router>

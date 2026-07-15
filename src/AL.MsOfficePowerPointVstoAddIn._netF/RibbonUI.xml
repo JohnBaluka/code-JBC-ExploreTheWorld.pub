@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--PLEASE NOTE: The CustomUI_OnLoad method is a virtual member of the COMAddin base class -->
+<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="CustomUI_OnLoad">
+  <ribbon>
+    <tabs>
+      <tab id="ETW_PowerPointWatcher_netF" label="ETW (VSTO._netF)">
+        <group id="etw_CountriesApiGroup_netF" label="Countries API">
+          <button id="etw_OpenCountriesForm_netF"
+                  label="Countries Form"
+                  imageMso="ViewsFormView"
+                  size="large"
+                  onAction="OnOpenCountriesForm" />
+          <toggleButton id="etw_CountriesTaskPane_netF"
+                        label="Countries Pane"
+                        imageMso="ReviewReviewingPaneVertical"
+                        size="large"
+                        getPressed="OnGetPressedCountriesPane"
+                        onAction="OnCheckCountriesPane" />
+        </group>
+        <group id="etw_PowerPointWatcherGroup_netF" label="Watcher">
+          <button id="etw_OpenPowerPointWatcher_netF"
+                  label="Watcher Form"
+                  imageMso="ViewsFormView"
+                  size="large"
+                  onAction="OnOpenWatcher" />
+          <toggleButton id="etw_PowerPointTaskPane"
+                        label="Watcher Pane"
+                        imageMso="ReviewReviewingPaneVertical"
+                        size="large"
+                        getPressed="OnGetPressedPanelToggle"
+                        onAction="OnCheckPanelToggle" />
+        </group>
+        <group id="etw_PowerPointJsonGroup_netF" label="Export">
+          <button id="etw_SaveAsJson_netF"
+                  label="Save as JSON"
+                  imageMso="FileSaveAs"
+                  size="large"
+                  onAction="OnSaveAsJson" />
+          <button id="etw_SaveAsJsonVba_netF"
+                  label="Save as JSON (Direct)"
+                  imageMso="FileSaveAs"
+                  size="large"
+                  onAction="OnSaveAsJsonVba" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

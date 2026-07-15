@@ -1,0 +1,50 @@
+@page "/presentationinfo"
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Presentation Info</PageTitle>
+
+<LoadingProgress>
+    <RadzenStack Orientation="Orientation.Vertical"
+                 AlignItems="AlignItems.Center"
+                 Gap="0.5rem">
+        <RadzenText TextStyle="TextStyle.H4">📄 Presentation Info</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1">
+            Retrieves information about the active PowerPoint presentation via the Office JavaScript API.
+        </RadzenText>
+
+        <RadzenButton ButtonStyle="ButtonStyle.Primary"
+                      Click="RefreshPresentationInfo"
+                      Text="Refresh" />
+
+        @if (_isLoading)
+        {
+            <RadzenProgressBarCircular Style="width:48px; height:48px; margin-top:1rem;"
+                                       ShowValue="false"
+                                       Mode="ProgressBarMode.Indeterminate" />
+        }
+        else if (_error is not null)
+        {
+            <RadzenAlert Style="width:100%; margin-top:0.5rem;"
+                         AlertStyle="AlertStyle.Danger"
+                         ShowIcon="false"
+                         AllowClose="false">
+                         @_error
+            </RadzenAlert>
+        }
+        else if (_info is not null)
+        {
+            <RadzenDataGrid Style="width:100%; margin-top:0.5rem;"
+                            Data="@InfoItems"
+                            TItem="InfoRow">
+                <Columns>
+                    <RadzenDataGridColumn TItem="InfoRow"
+                                         Property="Label"
+                                         Title="Property" />
+                    <RadzenDataGridColumn TItem="InfoRow"
+                                         Property="Value"
+                                         Title="Value" />
+                </Columns>
+            </RadzenDataGrid>
+        }
+    </RadzenStack>
+</LoadingProgress>

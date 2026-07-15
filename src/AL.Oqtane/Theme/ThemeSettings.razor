@@ -1,0 +1,100 @@
+@namespace JBC.ExploreTheWorld.AL.Oqtane.Theme
+@inherits ModuleBase
+@implements ISettingsControl
+@inject ISettingService SettingService
+@attribute [OqtaneIgnore]
+
+<div class="container">
+    <div class="row mb-2 align-items-center">
+        <label class="col-sm-3"
+               for="RadzenCss">
+               Radzen Theme
+        </label>
+        <div class="col-sm-9">
+            <select id="RadzenCss"
+                    class="form-select"
+                    @bind="_radzenCss">
+                <optgroup label="Default">
+                    <option value="default.css">Default</option>
+                    <option value="dark.css">Default Dark</option>
+                </optgroup>
+                <optgroup label="Material">
+                    <option value="material.css">Material</option>
+                    <option value="material-dark.css">Material Dark</option>
+                </optgroup>
+                <optgroup label="Humanistic">
+                    <option value="humanistic.css">Humanistic</option>
+                    <option value="humanistic-dark.css">Humanistic Dark</option>
+                </optgroup>
+                <optgroup label="Software">
+                    <option value="software.css">Software</option>
+                    <option value="software-dark.css">Software Dark</option>
+                </optgroup>
+                <optgroup label="Standard">
+                    <option value="standard.css">Standard</option>
+                    <option value="standard-dark.css">Standard Dark</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-2 align-items-center">
+        <label class="col-sm-3"
+               for="ShowLogin">
+               Show Login?
+        </label>
+        <div class="col-sm-9">
+            <select id="ShowLogin"
+                    class="form-select"
+                    @bind="_login">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-2 align-items-center">
+        <label class="col-sm-3"
+               for="ShowRegister">
+               Show Register?
+        </label>
+        <div class="col-sm-9">
+            <select id="ShowRegister"
+                    class="form-select"
+                    @bind="_register">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _ns = "JBC.ExploreTheWorld.AL.Oqtane.Theme";
+    private string _radzenCss = "default.css";
+    private string _login = "true";
+    private string _register = "true";
+
+    protected override void OnParametersSet()
+    {
+        var settings = PageState.Site.Settings;
+        _radzenCss = SettingService.GetSetting(settings, _ns + ":RadzenCss", "default.css");
+        _login     = SettingService.GetSetting(settings, _ns + ":Login",     "true");
+        _register  = SettingService.GetSetting(settings, _ns + ":Register",  "true");
+    }
+
+    public async Task UpdateSettings()
+    {
+        try
+        {
+            var settings = await SettingService.GetSiteSettingsAsync(PageState.Site.SiteId);
+            settings = SettingService.SetSetting(settings, _ns + ":RadzenCss", _radzenCss);
+            settings = SettingService.SetSetting(settings, _ns + ":Login",     _login);
+            settings = SettingService.SetSetting(settings, _ns + ":Register",  _register);
+            await SettingService.UpdateSiteSettingsAsync(settings, PageState.Site.SiteId);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Theme Settings {Error}", ex.Message);
+            AddModuleMessage("Error Saving Settings", MessageType.Error);
+        }
+    }
+}

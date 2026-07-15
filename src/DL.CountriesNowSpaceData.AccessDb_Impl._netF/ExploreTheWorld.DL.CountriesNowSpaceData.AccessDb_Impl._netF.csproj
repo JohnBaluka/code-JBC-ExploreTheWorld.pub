@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.CountriesNowSpaceData.AccessDb_Impl._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.CountriesNowSpaceData.AccessDb_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DL.CountriesNowSpaceData._netF\ExploreTheWorld.DL.CountriesNowSpaceData._netF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- EntityFrameworkCore.Jet 3.1.x supports netstandard2.0 (net481) with EF Core 3.1.
+         Requires Microsoft Access Database Engine (ACE OLEDB 12.0 or 16.0) installed. -->
+    <PackageReference Include="EntityFrameworkCore.Jet" Version="3.1.1" />
+  </ItemGroup>
+
+</Project>

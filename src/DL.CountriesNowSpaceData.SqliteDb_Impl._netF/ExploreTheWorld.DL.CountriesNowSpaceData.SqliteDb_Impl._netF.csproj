@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.CountriesNowSpaceData.SqliteDb_Impl._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.CountriesNowSpaceData.SqliteDb_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DL.CountriesNowSpaceData._netF\ExploreTheWorld.DL.CountriesNowSpaceData._netF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.32" />
+  </ItemGroup>
+
+</Project>

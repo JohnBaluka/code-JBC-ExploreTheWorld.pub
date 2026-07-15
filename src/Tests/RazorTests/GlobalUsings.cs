@@ -1,0 +1,10 @@
+global using Xunit;
+global using Bunit;
+global using Moq;
+global using FluentAssertions;
+global using Microsoft.Extensions.DependencyInjection;
+global using JBC.ExploreTheWorld.CL;
+global using JBC.ExploreTheWorld.DL.CountriesNowSpaceApi;
+global using JBC.ExploreTheWorld.BL;
+global using JBC.ExploreTheWorld.AL;
+global using JBC.ExploreTheWorld.AL.BlazorLib;

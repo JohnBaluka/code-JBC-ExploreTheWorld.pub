@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WasmDebugLevel>0</WasmDebugLevel>
+    <AssemblyName>ExploreTheWorld.AL.MsOfficePowerPointBlazorWebAddIn.Client</AssemblyName>
+    <RootNamespace>ExploreTheWorld.AL.MsOfficePowerPointBlazorWebAddIn.Client</RootNamespace>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Deterministic>true</Deterministic>
+    <IsPackable>false</IsPackable>
+    <TypeScriptNoEmitOnError>true</TypeScriptNoEmitOnError>
+    <TypeScriptSkipLibCheck>true</TypeScriptSkipLibCheck>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PublishTrimmed>true</PublishTrimmed>
+    <RunAOTCompilation>true</RunAOTCompilation>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Remove="node_modules/**/*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="node_modules\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
+    <ProjectReference Include="..\DL.MsJSInterop\ExploreTheWorld.DL.MsJSInterop.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi.MsOfficeJs.PowerPoint_Impl\ExploreTheWorld.DL.MsOfficeApi.MsOfficeJs.PowerPoint_Impl.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.9" />
+    <PackageReference Include="Radzen.Blazor" Version="11.1.2" />
+    <PackageReference Include="Microsoft.JSInterop.WebAssembly" Version="10.0.9" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="6.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="NpmRestore" BeforeTargets="BeforeBuild;ResolveReferences" Condition="Exists('package.json')">
+    <PropertyGroup>
+      <NpmStampFile>node_modules/.package-lock.stamp</NpmStampFile>
+      <NpmRestoreNeeded Condition="!Exists('$(NpmStampFile)')">true</NpmRestoreNeeded>
+      <_PackageLockTime Condition="Exists('package-lock.json') AND Exists('$(NpmStampFile)')">$([System.IO.File]::GetLastWriteTime('package-lock.json').Ticks)</_PackageLockTime>
+      <_StampTime Condition="Exists('package-lock.json') AND Exists('$(NpmStampFile)')">$([System.IO.File]::GetLastWriteTime('$(NpmStampFile)').Ticks)</_StampTime>
+      <NpmRestoreNeeded Condition="'$(_PackageLockTime)' != '' AND '$(_StampTime)' != '' AND $(_PackageLockTime) &gt; $(_StampTime)">true</NpmRestoreNeeded>
+    </PropertyGroup>
+    <Message Importance="high" Text="Running npm ci (package-lock.json updated or first build)..." Condition="'$(NpmRestoreNeeded)' == 'true'" />
+    <Exec Command="npm ci" Condition="'$(NpmRestoreNeeded)' == 'true'" ConsoleToMSBuild="true" />
+    <Touch Files="$(NpmStampFile)" AlwaysCreate="true" Condition="'$(NpmRestoreNeeded)' == 'true'" />
+    <Message Importance="low" Text="Skipping npm ci - packages are up to date" Condition="'$(NpmRestoreNeeded)' != 'true'" />
+  </Target>
+
+</Project>

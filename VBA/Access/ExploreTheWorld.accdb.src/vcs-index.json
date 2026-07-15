@@ -1,0 +1,601 @@
+﻿{
+  "Info": {
+    "Class": "clsVCSIndex",
+    "Description": "Version Control System Index"
+  },
+  "Items": {
+    "MergeBuildDate": null,
+    "FullBuildDate": "2026-07-07T22:25:06.000Z",
+    "ExportDate": "2026-07-12T18:19:11.000Z",
+    "FullExportDate": "2026-05-22T15:53:33.000Z",
+    "OptionsHash": "a91e4f8",
+    "LastMergedCommit": "",
+    "Components": {
+      "DB Connections": {
+        "db-connection.json": {
+        }
+      },
+      "DB Properties": {
+        "dbs-properties.json": {
+          "FileHash": "aaa65c4",
+          "ExportDate": "2026-07-12T18:19:09.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "ccc19f3",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        }
+      },
+      "Doc Properties": {
+        "documents.json": {
+          "FileHash": "a3e8f58",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "e3afcd5",
+          "ImportDate": "2026-07-07T22:25:04.000Z"
+        }
+      },
+      "Forms": {
+        "_Template.bas": {
+          "FileHash": "02e7656",
+          "ExportDate": "2026-05-21T00:29:00.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "4dd04ce",
+          "ImportDate": "2026-05-20T20:44:12.000Z",
+          "OtherHash": "ab8b883"
+        },
+        "cns_Country.bas": {
+          "FileHash": "d3b20af",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "d8b85b5",
+          "ImportDate": "2026-07-07T22:25:02.000Z",
+          "OtherHash": "4e29fbb"
+        },
+        "Main.bas": {
+          "FileHash": "e9cf56b",
+          "ExportDate": "2026-06-16T09:49:24.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "ae40aa6",
+          "ImportDate": "2026-06-15T19:08:10.000Z",
+          "OtherHash": "b413dda"
+        },
+        "MsExcel.bas": {
+          "FileHash": "f17a4d0",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "3791abf",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "OtherHash": "2c92c02"
+        },
+        "MsExcel_Events.bas": {
+          "FileHash": "6e29c1b",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "a614f5f",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "OtherHash": "ab8b883"
+        },
+        "MsPowerPoint.bas": {
+          "FileHash": "1e77334",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "d693af9",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "OtherHash": "27d56f0"
+        },
+        "MsPowerPoint_Events.bas": {
+          "FileHash": "78b6532",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "0e7ffa2",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "OtherHash": "ab8b883"
+        },
+        "MsWord.bas": {
+          "FileHash": "f895df5",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "e619f2d",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "OtherHash": "08935b5"
+        },
+        "MsWord_Events.bas": {
+          "FileHash": "19e9a93",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "e482e9e",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "OtherHash": "ab8b883"
+        },
+        "WEB__Source.bas": {
+          "FileHash": "cc5f6b2",
+          "ExportDate": "2026-05-20T00:00:00.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "306af95",
+          "ImportDate": "2026-05-20T20:44:12.000Z"
+        },
+        "WEB__SourceLink.bas": {
+          "FileHash": "00000000",
+          "OtherHash": "00000000",
+          "ExportDate": "2026-05-20T00:00:00.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "00000000"
+        }
+      },
+      "Hidden Attributes": {
+        "hidden-attributes.json": {
+          "FileHash": "fe9c7bf",
+          "ExportDate": "2026-06-26T16:30:33.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "b2e4f26"
+        }
+      },
+      "Macros": {
+        "AutoExec.bas": {
+          "FileHash": "1331a16",
+          "ImportDate": "2026-06-26T15:56:47.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "6f5d5cb",
+          "ExportDate": "2026-06-26T15:05:30.000Z"
+        }
+      },
+      "Modules": {
+        "APP.bas": {
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "d7e12b9",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "FileHash": "3da6a2f",
+          "OtherHash": "61f0d24"
+        },
+        "APP__FormInfo.cls": {
+          "FileHash": "c324be5",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "6aac9ca",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "OtherHash": "7906ece"
+        },
+        "APP__Ribbon.bas": {
+          "FileHash": "4a39540",
+          "ImportDate": "2026-06-26T15:56:48.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "ddc39dc",
+          "ExportDate": "2026-06-26T15:05:30.000Z"
+        },
+        "ETW__cns_API.bas": {
+          "FileHash": "e9e520a",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "49df129",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "OtherHash": "69fbfb3"
+        },
+        "ETW__cns_MsExcel_OpenXML.bas": {
+          "FileHash": "e6f463e",
+          "ImportDate": "2026-05-21T20:33:25.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "2dd68df",
+          "ExportDate": "2026-05-21T19:55:52.000Z"
+        },
+        "ETW__cns_MsExcel_VBA.bas": {
+          "FileHash": "b79df62",
+          "ImportDate": "2026-05-21T20:33:25.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "8caffe7",
+          "ExportDate": "2026-05-21T20:47:59.000Z",
+          "OtherHash": "ae60598"
+        },
+        "ETW__cns_MsExcel_VBA.cls": {
+          "FileHash": "2631e9a",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "58964fc",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "OtherHash": "452d598"
+        },
+        "ETW__cns_MsPowerPoint_OpenXML.bas": {
+          "FileHash": "6568240",
+          "ImportDate": "2026-05-21T20:33:26.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "907e621",
+          "ExportDate": "2026-05-21T19:55:52.000Z"
+        },
+        "ETW__cns_MsPowerPoint_VBA.bas": {
+          "FileHash": "6da40ac",
+          "ImportDate": "2026-05-21T20:33:26.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "b562935",
+          "ExportDate": "2026-05-21T20:47:59.000Z",
+          "OtherHash": "6df6d81"
+        },
+        "ETW__cns_MsPowerPoint_VBA.cls": {
+          "FileHash": "8dc2cbf",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "d39b927",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "OtherHash": "aae3132"
+        },
+        "ETW__cns_MsWord_OpenXML.bas": {
+          "FileHash": "9daa463",
+          "ImportDate": "2026-05-21T20:33:26.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "32aaf1e",
+          "ExportDate": "2026-05-21T19:55:52.000Z"
+        },
+        "ETW__cns_MsWord_VBA.bas": {
+          "FileHash": "db6ee8a",
+          "ImportDate": "2026-05-21T20:33:26.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "942268e",
+          "ExportDate": "2026-05-21T20:47:59.000Z",
+          "OtherHash": "3ad9160"
+        },
+        "ETW__cns_MsWord_VBA.cls": {
+          "FileHash": "19f9d2f",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "86d87b0",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "OtherHash": "3de3a52"
+        },
+        "ETW__CountriesJsonWriter.bas": {
+          "FileHash": "cd8f246",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "28119b7",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "OtherHash": "d235750"
+        },
+        "ETW__FlagImages.bas": {
+          "FileHash": "7686228",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "8d0c2b6",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "OtherHash": "e7fea3e"
+        },
+        "ETW__FormManager.bas": {
+          "FileHash": "b896090",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "ca4df1a",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "OtherHash": "d0db7cf"
+        },
+        "ETW__OpenXML_Helper.bas": {
+          "FileHash": "251eb0b",
+          "ImportDate": "2026-05-21T20:33:26.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "b40cb0b",
+          "ExportDate": "2026-05-21T19:55:52.000Z"
+        },
+        "JsonConverter.bas": {
+          "FileHash": "3ae0449",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "9de7742",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "OtherHash": "dc0b062"
+        },
+        "mFile.bas": {
+          "FileHash": "5dbb71c",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "49f8e37",
+          "ImportDate": "2026-07-07T22:25:03.000Z",
+          "OtherHash": "039ed42"
+        },
+        "MSO_JsonWriterCore.bas": {
+          "FileHash": "76730bf",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "a026923",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "OtherHash": "50dcde4"
+        },
+        "MSO_MsExcel_JsonWriter.bas": {
+          "FileHash": "b083a2d",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "943870c",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "OtherHash": "e47a827"
+        },
+        "MSO_MsPowerPoint_JsonWriter.bas": {
+          "FileHash": "6a9b149",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "44bfa9a",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "OtherHash": "2b0b1e3"
+        },
+        "MSO_MsWord_JsonWriter.bas": {
+          "FileHash": "a9b7714",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "dbedaa2",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "OtherHash": "f3240d0"
+        },
+        "SYS__Guid.bas": {
+          "FileHash": "d608617",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "52f2862",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "OtherHash": "f0ca87d"
+        },
+        "SYS__Strings.bas": {
+          "FileHash": "fe44063",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "26ecb19",
+          "ImportDate": "2026-07-07T22:25:04.000Z",
+          "OtherHash": "8e038ce"
+        }
+      },
+      "Nav Pane Groups": {
+        "nav-pane-groups.json": {
+          "FileHash": "552f25f",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "56bc4e2",
+          "ImportDate": "2026-07-07T22:25:04.000Z"
+        }
+      },
+      "Proj Properties": {
+        "proj-properties.json": {
+        }
+      },
+      "Project": {
+        "project.json": {
+          "FileHash": "8ca0d00",
+          "ExportDate": "2026-07-12T18:19:09.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "94b1978",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        }
+      },
+      "Queries": {
+        "cns_Country__FormQuery.bas": {
+          "FileHash": "3ec8211",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "960d3c3",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "cns_Country__ListQuery.bas": {
+          "FileHash": "6001a3e",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "98383b9",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "MsExcel_Events_FormQuery.bas": {
+          "FileHash": "5f3a24d",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "faa7a97",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "MsPowerPoint_Events_FormQuery.bas": {
+          "FileHash": "4c4dc86",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "611ae56",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "MsWord_Events_FormQuery.bas": {
+          "FileHash": "706b021",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "878740e",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "WEB__Source__ListQuery.bas": {
+          "FileHash": "02682c7",
+          "ExportDate": "2026-05-20T00:00:00.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "7b89385",
+          "ImportDate": "2026-05-20T20:44:12.000Z"
+        },
+        "WEB__SourceLink__FormQuery.bas": {
+          "FileHash": "6029a74",
+          "ExportDate": "2026-05-20T00:00:00.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "77840c2",
+          "ImportDate": "2026-05-20T20:44:12.000Z"
+        }
+      },
+      "Relations": {
+        "cns_CountryCity.json": {
+          "FileHash": "15629d3",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "f4204a1",
+          "ImportDate": "2026-07-07T22:25:04.000Z"
+        },
+        "cns_CountryCountryCapital.json": {
+          "FileHash": "9119813",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "0c322d2",
+          "ImportDate": "2026-07-07T22:25:04.000Z"
+        },
+        "cns_CountryCountryFlag.json": {
+          "FileHash": "3b10b29",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "8050830",
+          "ImportDate": "2026-07-07T22:25:04.000Z"
+        },
+        "cns_CountryPopulationPopulationCount.json": {
+          "FileHash": "40338e1",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "815bbf8",
+          "ImportDate": "2026-07-07T22:25:04.000Z"
+        },
+        "cns_CountryStatesCountryState.json": {
+          "FileHash": "5e09216",
+          "ExportDate": "2026-07-12T18:19:11.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "7748267",
+          "ImportDate": "2026-07-07T22:25:04.000Z"
+        },
+        "WEB__SourceWEB__SourceLink.json": {
+          "FileHash": "86a6e44",
+          "ExportDate": "2026-05-20T00:00:00.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "478b692",
+          "ImportDate": "2026-05-20T20:44:13.000Z"
+        }
+      },
+      "Shared Images": {
+        "1_Slide1.json": {
+          "FileHash": "0c5f188",
+          "ExportDate": "2026-07-12T18:19:09.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "555ada2",
+          "OtherHash": "2fb09a6"
+        },
+        "Slide1.json": {
+          "FileHash": "01f66df",
+          "ExportDate": "2026-07-12T18:19:09.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "7edb3e0",
+          "OtherHash": "8f0ca09"
+        }
+      },
+      "Tables": {
+        "_Template.xml": {
+          "FileHash": "4d39139",
+          "ExportDate": "2026-05-21T00:28:59.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "b212e86",
+          "ImportDate": "2026-05-20T20:44:12.000Z"
+        },
+        "_Template_Link.xml": {
+          "FileHash": "52cfc76",
+          "ExportDate": "2026-05-21T00:28:59.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "a7391d6",
+          "ImportDate": "2026-05-20T20:44:12.000Z"
+        },
+        "APP__Setting.xml": {
+          "FileHash": "07b3312",
+          "ExportDate": "2026-07-12T18:19:09.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "8ca6023",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "cns_City.xml": {
+          "FileHash": "f95c1f1",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "e75c50c",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "cns_Country.xml": {
+          "FileHash": "42dae87",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "26b68d8",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "cns_CountryCapital.xml": {
+          "FileHash": "1f7cc31",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "4f1a2a4",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "cns_CountryFlag.xml": {
+          "FileHash": "2d93f78",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "9019d9f",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "cns_CountryPopulation.xml": {
+          "FileHash": "a4e9f3d",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "fe5d40d",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "cns_CountryState.xml": {
+          "FileHash": "36e1823",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "21c7304",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "cns_CountryStates.xml": {
+          "FileHash": "e6974e7",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "0a4211d",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "cns_PopulationCount.xml": {
+          "FileHash": "a53d048",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "333ab4a",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "MsOfficeEvents.xml": {
+          "FileHash": "b0dc633",
+          "ExportDate": "2026-07-12T18:19:10.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "d000d2e",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        },
+        "WEB__Source.xml": {
+          "FileHash": "e604508",
+          "ExportDate": "2026-05-20T00:00:00.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "72786b9",
+          "ImportDate": "2026-05-20T20:44:12.000Z"
+        },
+        "WEB__SourceLink.xml": {
+          "FileHash": "332bccd",
+          "ExportDate": "2026-05-20T00:00:00.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "23be78c",
+          "ImportDate": "2026-05-20T20:44:12.000Z"
+        }
+      },
+      "Themes": {
+        "Office Theme.thmx": {
+          "FileHash": "f8d58e1",
+          "ExportDate": "2026-07-12T18:19:09.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "eec4abf",
+          "ImportDate": "2026-07-07T22:25:02.000Z",
+          "OtherHash": "310a6ac"
+        }
+      },
+      "VB Project": {
+        "vbe-project.json": {
+          "FileHash": "3c1ce36",
+          "ExportDate": "2026-07-12T18:19:09.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "27e2a9c",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        }
+      },
+      "VBE References": {
+        "vbe-references.json": {
+          "FileHash": "ce092ac",
+          "ExportDate": "2026-07-12T18:19:09.000Z",
+          "SourceModified": null,
+          "FilePropertiesHash": "cfa2a0c",
+          "ImportDate": "2026-07-07T22:25:02.000Z"
+        }
+      }
+    }
+  }
+}

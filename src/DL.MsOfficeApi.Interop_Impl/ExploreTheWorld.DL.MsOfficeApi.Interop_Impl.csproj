@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsOfficeApi.Interop_Impl</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsOfficeApi.Interop_Impl</RootNamespace>
+    <!-- The Office PIAs are .NET Framework-era interop assemblies referenced via NuGet; they are
+         COM interop assemblies that resolve at runtime on Windows against installed Office. -->
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
+  </PropertyGroup>
+
+  <!-- Microsoft.Office.Core (office.dll, v15.0.0.0) is the one Office PIA with no NuGet package.
+       The host interop packages below reference office 15.0.0.0, so reference the matching PIA
+       already present on any Office/VSTO dev machine (GAC first, VSTO Shared PIA folder fallback). -->
+  <PropertyGroup>
+    <_OfficePiaGac>$(WINDIR)\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\office.dll</_OfficePiaGac>
+    <_OfficePiaVsto>$(MSBuildProgramFiles32)\Microsoft Visual Studio\Shared\Visual Studio Tools for Office\PIA\Office15\Office.dll</_OfficePiaVsto>
+    <OfficePiaPath Condition="Exists('$(_OfficePiaGac)')">$(_OfficePiaGac)</OfficePiaPath>
+    <OfficePiaPath Condition="'$(OfficePiaPath)' == '' And Exists('$(_OfficePiaVsto)')">$(_OfficePiaVsto)</OfficePiaPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
+    <!-- Keep Excel on 15.x (assembly 15.0.0.0) — a 16.x package pulls office 16.0.0.0 and
+         breaks the office 15.0.0.0 reference above (CS1705). -->
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000" />
+    <PackageReference Include="Microsoft.Office.Interop.PowerPoint" Version="15.0.4420.1018" />
+    <PackageReference Include="stdole" Version="17.14.40260" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="office">
+      <HintPath>$(OfficePiaPath)</HintPath>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.AL.Oqtane.Theme</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.AL.Oqtane.Theme</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Private=false: Oqtane assemblies are already in Oqtane.Server/bin; no redundant copy. -->
+    <ProjectReference Include="..\..\..\oqtane.framework\Oqtane.Shared\Oqtane.Shared.csproj" Private="false" />
+    <ProjectReference Include="..\..\..\oqtane.framework\Oqtane.Client\Oqtane.Client.csproj" Private="false" />
+    <PackageReference Include="Radzen.Blazor" Version="11.1.2" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsJSInterop.RevealJs</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsJSInterop.RevealJs</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+    <ProjectReference Include="..\DL.MsJSInterop\ExploreTheWorld.DL.MsJSInterop.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.JSInterop" Version="10.0.9" />
+  </ItemGroup>
+
+</Project>

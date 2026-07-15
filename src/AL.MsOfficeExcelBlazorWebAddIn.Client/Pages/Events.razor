@@ -1,0 +1,73 @@
+@page "/events"
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Events</PageTitle>
+
+<LoadingProgress>
+    <RadzenStack Style="flex:1 1 auto; min-height:0;"
+                 Orientation="Orientation.Vertical"
+                 Gap="0.5rem">
+
+        <RadzenStack Style="width:100%;"
+                     Orientation="Orientation.Horizontal"
+                     Gap="0.5rem"
+                     AlignItems="AlignItems.Center">
+            <RadzenButton ButtonStyle="ButtonStyle.Primary"
+                          Click="StartWatching"
+                          Disabled="@_isWatching"
+                          Text="Start" />
+            <RadzenButton ButtonStyle="ButtonStyle.Secondary"
+                          Click="StopWatching"
+                          Disabled="@(!_isWatching)"
+                          Text="Stop" />
+            <RadzenButton ButtonStyle="ButtonStyle.Light"
+                          Click="ClearLog"
+                          Text="Clear" />
+            <RadzenBadge Style="margin-left:auto;"
+                         BadgeStyle="@(_isWatching ? BadgeStyle.Primary : BadgeStyle.Secondary)"
+                         Text="@(_isWatching ? "● Watching" : "○ Stopped")" />
+        </RadzenStack>
+
+        @if (_error is not null)
+        {
+            <RadzenAlert Style="width:100%;"
+                         AlertStyle="AlertStyle.Danger"
+                         ShowIcon="false"
+                         AllowClose="false">
+                         @_error
+            </RadzenAlert>
+        }
+
+        <RadzenText Style="margin-top:0.25rem; margin-bottom:0;"
+                    TextStyle="TextStyle.Subtitle2">
+                    Events to watch:
+        </RadzenText>
+        <RadzenStack Style="width:100%;"
+                     Orientation="Orientation.Vertical"
+                     Gap="0.25rem">
+            @foreach (var ev in _events)
+            {
+                <RadzenStack Orientation="Orientation.Horizontal"
+                             AlignItems="AlignItems.Center"
+                             Gap="0.4rem">
+                    <RadzenCheckBox @bind-Value="ev.Enabled"
+                                    Disabled="@_isWatching"
+                                    Name="@ev.Key" />
+                    <RadzenLabel Style="font-size:0.85rem; cursor:pointer;"
+                                 Text="@ev.Label"
+                                 Component="@ev.Key" />
+                </RadzenStack>
+            }
+        </RadzenStack>
+
+        <div style="flex:1 1 auto; min-height:120px; overflow-y:auto; background:#1e1e1e; color:#d4d4d4;
+                    border-radius:4px; padding:0.5rem; font-size:0.75rem;
+                    font-family:monospace; width:100%;">
+            @foreach (var entry in _log)
+            {
+                <div>@entry</div>
+            }
+        </div>
+
+    </RadzenStack>
+</LoadingProgress>

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.DL.MsOfficeApi.NetOffice_Impl._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.MsOfficeApi.NetOffice_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CL._netF\ExploreTheWorld.CL._netF.csproj" />
+    <ProjectReference Include="..\DL._netF\ExploreTheWorld.DL._netF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
+    <PackageReference Include="NetOfficeFw.Core"       Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Word"       Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Excel"      Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\DL.MsOfficeApi.NetOffice_Impl\**\*.cs">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="..\DL.MsOfficeApi.NetOffice_Impl\obj\**" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+</Project>

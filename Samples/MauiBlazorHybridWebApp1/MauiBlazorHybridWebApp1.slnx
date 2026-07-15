@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MauiBlazorHybridWebApp1.Shared/MauiBlazorHybridWebApp1.Shared.csproj" />
+  <Project Path="MauiBlazorHybridWebApp1.Web.Client/MauiBlazorHybridWebApp1.Web.Client.csproj" />
+  <Project Path="MauiBlazorHybridWebApp1.Web/MauiBlazorHybridWebApp1.Web.csproj" />
+  <Project Path="MauiBlazorHybridWebApp1/MauiBlazorHybridWebApp1.csproj" />
+</Solution>

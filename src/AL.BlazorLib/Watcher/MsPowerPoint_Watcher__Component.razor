@@ -1,0 +1,151 @@
+@inherits Base__RadzenComponent
+@namespace JBC.ExploreTheWorld.AL.BlazorLib.Watcher
+
+@if (!Visible) return;
+
+<div id="@GetId()"
+     class="@GetCssClass()"
+     style="height:100%; @GetHiddenStyle()"
+     @ref="@Element"
+     @attributes="Attributes">
+    <ErrorBoundary>
+        <ChildContent>
+            <RadzenStack Orientation="Orientation.Vertical"
+                         Gap="0"
+                         Style="height:100%; overflow:hidden;">
+
+                @* ── Header bar ── *@
+                <RadzenStack Orientation="Orientation.Horizontal"
+                             AlignItems="AlignItems.Center"
+                             JustifyContent="JustifyContent.SpaceBetween"
+                             Style="padding:0.5rem 1rem; flex-shrink:0;">
+                    <RadzenText Style="margin:0;"
+                                TextStyle="TextStyle.H5">
+                                Microsoft PowerPoint — Watcher
+                    </RadzenText>
+                    <RadzenStack Orientation="Orientation.Horizontal"
+                                 AlignItems="AlignItems.Center"
+                                 Gap="0.5rem">
+                        <RadzenBadge BadgeStyle="@(Watcher_AppService.PowerPointConnected ? BadgeStyle.Success : BadgeStyle.Light)"
+                                     Text="@(Watcher_AppService.PowerPointConnected ? "● Connected" : "○ Not Connected")" />
+                        @if (Watcher_AppService.PowerPointConnectAction != null || Watcher_AppService.PowerPointDisconnectAction != null)
+                        {
+                            <RadzenButton Text="@(Watcher_AppService.PowerPointConnected ? "Disconnect" : "Connect")"
+                                          Click="OnConnectClick"
+                                          ButtonStyle="@(Watcher_AppService.PowerPointConnected ? ButtonStyle.Danger : ButtonStyle.Success)"
+                                          Size="ButtonSize.Small" />
+                        }
+                    </RadzenStack>
+                </RadzenStack>
+
+                @* ── Main split: log + events grid ── *@
+                <RadzenSplitter Style="flex:1; min-height:0;">
+
+                    @* Left pane: open files + log + Save As Json *@
+                    <RadzenSplitterPane Size="60%"
+                                        Min="300px">
+                        <RadzenStack Orientation="Orientation.Vertical"
+                                     Gap="0.5rem"
+                                     Style="height:100%; padding:0.5rem; box-sizing:border-box;">
+
+                            @* Open Presentations *@
+                            <RadzenCard Style="flex-shrink:0;">
+                                <RadzenStack Orientation="Orientation.Horizontal"
+                                             AlignItems="AlignItems.Center"
+                                             Gap="0.5rem">
+                                    <RadzenText Style="margin:0; white-space:nowrap;"
+                                                TextStyle="TextStyle.Subtitle2">
+                                                Open Presentations
+                                    </RadzenText>
+                                    <RadzenDropDown Data="@Watcher_AppService.PowerPointOpenFiles"
+                                                    Style="flex:1;"
+                                                    @bind-Value="_selectedFile"
+                                                    Change="OnActiveDocChanged"
+                                                    Placeholder="(no open presentations)" />
+                                </RadzenStack>
+                            </RadzenCard>
+
+                            @* Event log *@
+                            @* column-reverse keeps the newest line pinned to the bottom (auto-scroll). *@
+                            <div style="flex:1; min-height:0; background:#000; color:#39ff14;
+                                        font-family:'Consolas',monospace; font-size:0.8rem;
+                                        padding:0.75rem; overflow-y:auto; border-radius:4px;
+                                        display:flex; flex-direction:column-reverse; border:1px solid #222;">
+                                <div style="white-space:pre-wrap;">@string.Join("\n", Watcher_AppService.PowerPointLog)</div>
+                            </div>
+
+                            @* Save As Json footer *@
+                            <RadzenCard Style="flex-shrink:0;">
+                                <RadzenStack Orientation="Orientation.Horizontal"
+                                             AlignItems="AlignItems.Center"
+                                             Gap="0.5rem"
+                                             Style="flex-wrap:wrap;">
+                                    <RadzenLabel Text="Method" />
+                                    <RadzenDropDown Data="@_jsonMethods"
+                                                    Style="width:120px;"
+                                                    @bind-Value="_jsonMethod"
+                                                    Change="OnJsonMethodChanged" />
+                                    <RadzenTextBox Style="flex:1; min-width:200px;"
+                                                   @bind-Value="_outputFilePath"
+                                                   Placeholder="Output .json file path..." />
+                                    <RadzenButton Text="Save As Json"
+                                                  Click="SaveAsJsonAsync"
+                                                  ButtonStyle="ButtonStyle.Primary"
+                                                  Size="ButtonSize.Small"
+                                                  Disabled="@(!Watcher_AppService.PowerPointConnected)" />
+                                    <RadzenButton Text="Clear Log"
+                                                  Click="ClearLog"
+                                                  ButtonStyle="ButtonStyle.Light"
+                                                  Size="ButtonSize.Small" />
+                                </RadzenStack>
+                            </RadzenCard>
+
+                        </RadzenStack>
+                    </RadzenSplitterPane>
+
+                    @* Right pane: event selection grid *@
+                    <RadzenSplitterPane Min="200px">
+                        <RadzenStack Orientation="Orientation.Vertical"
+                                     Gap="0.25rem"
+                                     Style="height:100%; padding:0.5rem; box-sizing:border-box;">
+                            <RadzenText Style="margin:0;"
+                                        TextStyle="TextStyle.Subtitle2">
+                                        Events to Log
+                            </RadzenText>
+                            <RadzenDataGrid Data="@Watcher_AppService.PowerPointEventToggles"
+                                            TItem="WatcherEventToggle"
+                                            Style="flex:1; min-height:0;"
+                                            AllowSorting="true">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="WatcherEventToggle"
+                                                          Property="Name"
+                                                          Title="Event"
+                                                          Width="160px" />
+                                    <RadzenDataGridColumn TItem="WatcherEventToggle"
+                                                          Property="Category"
+                                                          Title="Category"
+                                                          Width="120px" />
+                                    <RadzenDataGridColumn TItem="WatcherEventToggle"
+                                                          Property="Log"
+                                                          Title="Log"
+                                                          Width="60px">
+                                        <Template Context="evt">
+                                            <RadzenCheckBox Value="@evt.Log"
+                                                            Change="@(_ => ToggleEventLog(evt))"
+                                                            TValue="bool" />
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                </Columns>
+                            </RadzenDataGrid>
+                        </RadzenStack>
+                    </RadzenSplitterPane>
+
+                </RadzenSplitter>
+
+            </RadzenStack>
+        </ChildContent>
+        <ErrorContent Context="ex">
+            @{ Watcher_AppService.PowerPoint_AppendLog($"✘ Error: {ex.Message}"); }
+        </ErrorContent>
+    </ErrorBoundary>
+</div>

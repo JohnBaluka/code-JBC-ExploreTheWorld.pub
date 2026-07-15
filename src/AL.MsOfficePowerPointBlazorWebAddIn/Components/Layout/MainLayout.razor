@@ -1,0 +1,32 @@
+@inherits LayoutComponentBase
+
+<RadzenLayout>
+    <RadzenHeader>
+        <RadzenStack Style="padding: 0.5rem 1rem;"
+                     Orientation="Orientation.Horizontal"
+                     AlignItems="AlignItems.Center"
+                     JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenText Style="margin:0; color:var(--rz-base-900); font-size:0.9rem;"
+                        TextStyle="TextStyle.H6">
+                        Explore the World — PowerPoint Add-in
+            </RadzenText>
+            <RenderModeInfo @rendermode="InteractiveWebAssembly" />
+        </RadzenStack>
+    </RadzenHeader>
+    <RadzenBody Style="display:flex; flex-direction:column;">
+        <NavMenu />
+        <RadzenStack Style="padding:0.5rem; flex:1 1 auto; min-height:0;"
+                     Gap="0.5rem">
+            @Body
+        </RadzenStack>
+    </RadzenBody>
+    <RadzenFooter>
+        <RadzenStack Style="padding:0.25rem; font-size:0.7rem;"
+                     Orientation="Orientation.Vertical"
+                     AlignItems="AlignItems.Center">
+            <span>@TrademarkMessage1</span>
+            <span>@TrademarkMessage2</span>
+            <span>Powered by: @FrameworkDescription</span>
+        </RadzenStack>
+    </RadzenFooter>
+</RadzenLayout>

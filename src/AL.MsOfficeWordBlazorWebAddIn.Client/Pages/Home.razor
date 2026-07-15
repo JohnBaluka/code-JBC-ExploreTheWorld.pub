@@ -1,0 +1,33 @@
+@page "/"
+@page "/home"
+@rendermode InteractiveAuto
+
+<PageTitle>Home</PageTitle>
+
+<LoadingProgress>
+    <RadzenStack Orientation="Orientation.Vertical"
+                 AlignItems="AlignItems.Center"
+                 Gap="0.5rem">
+        <RadzenText TextStyle="TextStyle.H4">🚀 Hello!</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1">Welcome to the Explore the World Word Add-in.</RadzenText>
+
+        @if (!_hostInformation.IsInitialized)
+        {
+            <RadzenText TextStyle="TextStyle.H6">
+                Please <a href="https://learn.microsoft.com/office/dev/add-ins/testing/test-debug-office-add-ins#sideload-an-office-add-in-for-testing"
+                          target="_blank">
+                          sideload
+                </a> your add-in to see the app body.
+            </RadzenText>
+        }
+        else
+        {
+            <RadzenText TextStyle="TextStyle.Body1">
+                Use the navigation menu to explore Document Info and Events.
+            </RadzenText>
+            <RadzenButton ButtonStyle="ButtonStyle.Primary"
+                          Click="@(() => Navigation.NavigateTo("/documentinfo"))"
+                          Text="Document Info" />
+        }
+    </RadzenStack>
+</LoadingProgress>

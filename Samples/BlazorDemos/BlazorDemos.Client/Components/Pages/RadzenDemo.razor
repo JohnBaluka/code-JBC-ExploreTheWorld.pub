@@ -1,0 +1,23 @@
+@page "/radzen-demo"
+@rendermode InteractiveAuto
+
+<PageTitle>Radzen Demo</PageTitle>
+
+<RadzenText TextStyle="TextStyle.H4" class="rz-mb-4">Radzen Blazor Component</RadzenText>
+
+<RadzenCard Style="max-width: 420px;">
+    <RadzenStack Gap="1rem">
+        <RadzenText TextStyle="TextStyle.Body1" Style="font-weight: 600;">@Message</RadzenText>
+
+        <RadzenFormField Text="Name" Variant="Variant.Outlined">
+            <RadzenTextBox @bind-Value="Name" Placeholder="Enter your name" aria-label="Name" />
+        </RadzenFormField>
+
+        <RadzenButton Text="Show Greeting" Icon="waving_hand" Click="ShowGreetingAsync" />
+    </RadzenStack>
+</RadzenCard>
+
+@* Hosts Radzen's dialogs/notifications/tooltips. It lives on the page so it
+   shares this interactive component's DI scope (and therefore the same
+   DialogService instance that ShowGreetingAsync injects). *@
+<RadzenComponents />

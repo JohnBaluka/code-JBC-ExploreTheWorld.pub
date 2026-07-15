@@ -1,0 +1,7 @@
+﻿CREATE TABLE [cns_CountryState] (
+  [GUID] GUID CONSTRAINT [PrimaryKey] PRIMARY KEY UNIQUE NOT NULL,
+  [Row_ID] AUTOINCREMENT CONSTRAINT [Row_ID] UNIQUE,
+  [CountryStates_GUID] GUID,
+  [Name] VARCHAR (255),
+  [StateCode] VARCHAR (20)
+)

@@ -1,0 +1,35 @@
+.demo-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.demo-card {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 1rem;
+    max-width: 420px;
+    background: #f9fafb;
+}
+
+.demo-message {
+    font-weight: 600;
+}
+
+.demo-card label {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.demo-card input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+}
+
+.demo-card button {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}

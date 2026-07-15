@@ -1,0 +1,232 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.2",
+  "parameters": {
+    "sqlServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "The SQL Server name (must be unique). If you have an existing SQL Server in your resource group, you can specify its name and include its login credentials below."
+      }
+    },
+    "sqlAdministratorLogin": {
+      "type": "string",
+      "metadata": {
+        "description": "The Administrator login username for the SQL Server specified above"
+      }
+    },
+    "sqlAdministratorLoginPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The Administrator login password for the SQL Server specified above"
+      }
+    },
+    "sqlDatabaseEditionTierDtuCapacity": {
+      "type": "string",
+      "defaultValue": "Basic-Basic-5-2",
+      "allowedValues": [
+        "Basic-Basic-5-2",
+        "Standard-S0-10-250",
+        "Standard-S1-20-250",
+        "Standard-S2-50-250",
+        "Standard-S3-100-250",
+        "Standard-S4-200-250",
+        "Standard-S6-400-250",
+        "Standard-S7-800-250",
+        "Standard-S9-1600-250",
+        "Standard-S12-3000-250",
+        "Premium-P1-125-500",
+        "Premium-P2-250-500",
+        "Premium-P4-500-500",
+        "Premium-P6-1000-500",
+        "Premium-P11-1750-500-1024",
+        "Premium-P15-4000-1024",
+        "GeneralPurpose-GP_Gen5_2-2-250",
+        "GeneralPurpose-GP_S_Gen5_2-2-250"
+      ],
+      "metadata": {
+        "description": "The SQL Database Configuration (Edition-Tier-DTU-Capacity)"
+      }
+    },
+    "sqlDatabaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "The SQL Database name (must be unique)"
+      }
+    },
+    "BlazorWebsiteName": {
+      "type": "string",
+      "metadata": {
+        "description": "The App Service name for the Blazor Website (must be unique). If you use the same name as the SQL Database specified above, it will make it easier to associate the resources later."
+      }
+    },
+    "BlazorSKU": {
+      "type": "string",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "defaultValue": "B1",
+      "metadata": {
+        "description": "The App Service SKU for the Blazor Website"
+      }
+    }
+  },
+  "variables": {
+    "hostingPlanName": "[concat('Oqtane-HostingPlan-', uniqueString(resourceGroup().id))]",
+    "databaseCollation": "SQL_Latin1_General_CP1_CI_AS",
+    "databaseEditionTierDtuCapacity": "[split(parameters('sqlDatabaseEditionTierDtuCapacity'),'-')]",
+    "databaseEdition": "[variables('databaseEditionTierDtuCapacity')[0]]",
+    "databaseTier": "[variables('databaseEditionTierDtuCapacity')[1]]",
+    "databaseDtu": "[if(greater(length(variables('databaseEditionTierDtuCapacity')), 2), variables('databaseEditionTierDtuCapacity')[2], '')]",
+    "databaseMaxSizeGigaBytes": "[if(greater(length(variables('databaseEditionTierDtuCapacity')), 3), variables('databaseEditionTierDtuCapacity')[3], '')]",
+    "databaseServerlessTiers": [
+      "GP_S_Gen5_2"
+    ]
+  },
+  "resources": [
+    // ------------------------------------------------------
+    // SQL Server
+    // ------------------------------------------------------
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[parameters('sqlServerName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "SQL Server"
+      },
+      "properties": {
+        "administratorLogin": "[parameters('sqlAdministratorLogin')]",
+        "administratorLoginPassword": "[parameters('sqlAdministratorLoginPassword')]",
+        "version": "12.0"
+      }
+    },
+    // ------------------------------------------------------
+    // SQL Database (separate resource rather than subresource)
+    // ------------------------------------------------------
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('sqlServerName'), parameters('sqlDatabaseName'))]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "Database"
+      },
+      "sku": {
+        "name": "[if(equals(variables('databaseEdition'), 'GeneralPurpose'), variables('databaseTier'), variables('databaseEdition'))]",
+        "tier": "[variables('databaseEdition')]",
+        "capacity": "[if(equals(variables('databaseDtu'), ''), json('null'), int(variables('databaseDtu')))]"
+      },
+      "kind": "[concat('v12.0,user,vcore', if(contains(variables('databaseServerlessTiers'), variables('databaseTier')), ',serverless', ''))]",
+      "properties": {
+        "edition": "[variables('databaseEdition')]",
+        "collation": "[variables('databaseCollation')]",
+        "maxSizeBytes": "[if(equals(variables('databaseMaxSizeGigaBytes'), ''), json('null'), mul(mul(mul(int(variables('databaseMaxSizeGigaBytes')),1024),1024),1024))]",
+        "requestedServiceObjectiveName": "[variables('databaseTier')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
+      ]
+    },
+    // ------------------------------------------------------
+    // Transparent Data Encryption child resource
+    // ------------------------------------------------------
+    {
+      "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+      "apiVersion": "2021-02-01-preview",
+      "name": "[format('{0}/{1}/current', parameters('sqlServerName'), parameters('sqlDatabaseName'))]",
+      "properties": {
+        "state": "Enabled"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers/databases', parameters('sqlServerName'), parameters('sqlDatabaseName'))]"
+      ]
+    },
+    // ------------------------------------------------------
+    // Firewall Rule
+    // ------------------------------------------------------
+    {
+      "type": "Microsoft.Sql/servers/firewallRules",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('sqlServerName'), 'AllowAllMicrosoftAzureIps')]",
+      "properties": {
+        "endIpAddress": "0.0.0.0",
+        "startIpAddress": "0.0.0.0"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
+      ]
+    },
+    // ------------------------------------------------------
+    // App Service Plan
+    // ------------------------------------------------------
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('hostingPlanName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "Blazor"
+      },
+      "sku": {
+        "name": "[parameters('BlazorSKU')]",
+        "capacity": "1"
+      },
+      "properties": {
+        "name": "[variables('hostingPlanName')]",
+        "numberOfWorkers": 1
+      },
+      "dependsOn": []
+    },
+    // ------------------------------------------------------
+    // Web App
+    // ------------------------------------------------------
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[parameters('BlazorWebsiteName')]",
+      "kind": "app",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName')))]": "empty",
+        "displayName": "Website"
+      },
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "siteConfig": {
+          "webSocketsEnabled": true,
+          "netFrameworkVersion": "v10.0"
+        }
+      },
+      "dependsOn": [
+        "[variables('hostingPlanName')]"
+      ],
+      "resources": [
+        // --------------------------------------------------
+        // ZIP Deploy
+        // --------------------------------------------------
+        {
+	  "type": "Microsoft.Web/sites/extensions",
+	  "apiVersion": "2024-04-01",
+	  "name": "[concat(parameters('BlazorWebsiteName'), '/ZipDeploy')]",
+          "properties": {
+	    "packageUri": "https://github.com/oqtane/oqtane.framework/releases/download/v10.2.1/Oqtane.Framework.10.2.1.Install.zip"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', parameters('BlazorWebsiteName'))]"
+          ]
+        }
+      ]
+    }
+  ]
+}

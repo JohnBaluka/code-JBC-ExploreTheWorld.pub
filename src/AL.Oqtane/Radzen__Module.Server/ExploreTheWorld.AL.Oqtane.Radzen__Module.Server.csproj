@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.AL.Oqtane.Radzen__Module.Server</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.AL.Oqtane.Radzen</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Private=false: Oqtane.Shared is already present in Oqtane.Server/bin. -->
+    <ProjectReference Include="..\..\..\oqtane.framework\Oqtane.Shared\Oqtane.Shared.csproj" Private="false" />
+    <!-- Radzen__Module.Client gets copied transitively into Oqtane.Server/bin via this Server module. -->
+    <ProjectReference Include="..\Radzen__Module.Client\ExploreTheWorld.AL.Oqtane.Radzen__Module.Client.csproj" />
+    <PackageReference Include="Radzen.Blazor" Version="11.1.2" />
+  </ItemGroup>
+
+</Project>

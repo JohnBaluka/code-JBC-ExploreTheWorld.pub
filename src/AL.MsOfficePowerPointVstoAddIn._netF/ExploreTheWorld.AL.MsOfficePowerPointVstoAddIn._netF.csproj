@@ -1,0 +1,99 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <OutputType>Library</OutputType>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="NetOfficeFw.Core" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Excel" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Word" Version="1.9.10" />
+    <PackageReference Include="System.Net.Http.Json" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AL.WinFormsLib._netF\ExploreTheWorld.AL.WinFormsLib._netF.csproj" />
+    <ProjectReference Include="..\DL.MsOfficeApi_Impl._netF\ExploreTheWorld.DL.MsOfficeApi_Impl._netF.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData._netF\ExploreTheWorld.DL.CountriesNowSpaceData._netF.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.SqliteDb_Impl._netF\ExploreTheWorld.DL.CountriesNowSpaceData.SqliteDb_Impl._netF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="RibbonUI.xml" />
+  </ItemGroup>
+
+  <Target Name="RegisterComAddin" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A6F7A8B9-D0E1-4C34-F012-345678901234}&quot; /ve /d &quot;JBC ETW PowerPoint Watcher&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A6F7A8B9-D0E1-4C34-F012-345678901234}\InprocServer32&quot; /ve /d mscoree.dll /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A6F7A8B9-D0E1-4C34-F012-345678901234}\InprocServer32&quot; /v Class /d JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn.Addin /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A6F7A8B9-D0E1-4C34-F012-345678901234}\InprocServer32&quot; /v Assembly /d &quot;$(AssemblyName), Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A6F7A8B9-D0E1-4C34-F012-345678901234}\InprocServer32&quot; /v RuntimeVersion /d v4.0.30319 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A6F7A8B9-D0E1-4C34-F012-345678901234}\InprocServer32&quot; /v ThreadingModel /d Both /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A6F7A8B9-D0E1-4C34-F012-345678901234}\InprocServer32&quot; /v CodeBase /d &quot;$(TargetPath)&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn._netF.Addin&quot; /ve /d &quot;JBC ETW PowerPoint Watcher&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn._netF.Addin\CLSID&quot; /ve /d &quot;{A6F7A8B9-D0E1-4C34-F012-345678901234}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\PowerPoint\Addins\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn._netF.Addin&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\PowerPoint\Addins\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn._netF.Addin&quot; /v FriendlyName /d &quot;JBC ETW PowerPoint Watcher&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\PowerPoint\Addins\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn._netF.Addin&quot; /v Description /d &quot;ExploreTheWorld PowerPoint event watcher&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Watcher UserControl COM registration (required for ICTPFactory.CreateCTP).
+         The control lives in AL.WinFormsLib._netF (namespace JBC.ExploreTheWorld.AL.WinFormsLib);
+         CLSID matches its [Guid], and Class/Assembly/CodeBase point at that library, not this add-in. -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}&quot; /ve /d &quot;ETW PowerPoint Watcher UC&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\InprocServer32&quot; /ve /d mscoree.dll /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\InprocServer32&quot; /v Class /d JBC.ExploreTheWorld.AL.WinFormsLib.MsPowerPoint_Watcher_UserControl /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\InprocServer32&quot; /v Assembly /d &quot;JBC.ExploreTheWorld.AL.WinFormsLib._netF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\InprocServer32&quot; /v RuntimeVersion /d v4.0.30319 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\InprocServer32&quot; /v ThreadingModel /d Both /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\InprocServer32&quot; /v CodeBase /d &quot;$(TargetDir)JBC.ExploreTheWorld.AL.WinFormsLib._netF.dll&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.WinFormsLib.MsPowerPoint_Watcher_UserControl&quot; /ve /d &quot;ETW PowerPoint Watcher UC&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.WinFormsLib.MsPowerPoint_Watcher_UserControl\CLSID&quot; /ve /d &quot;{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Mark the Watcher control SafeForScripting + SafeForInitializing so the Office ActiveX host accepts it as CTP content. -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\Implemented Categories\{7DD95802-9882-11CF-9FA9-00AA006C42C4}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Register as an ActiveX Control (Control subkey + MiscStatus) so the Office CTP host builds an in-place window; regasm writes these, the hand-rolled registration omitted them (pane was created + Visible=true but never rendered). -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\Control&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\MiscStatus&quot; /ve /d 0 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}\MiscStatus\1&quot; /ve /d 131473 /f" ContinueOnError="WarnAndContinue" />
+    <!-- Remove stale registration from when the control lived in this add-in project. -->
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\CLSID\{F3E4D5C6-A7B8-4901-ACDE-F01234567012}&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn.MsPowerPoint_Watcher_UserControl&quot; /f" ContinueOnError="true" />
+    <!-- CountriesNow TaskPane UserControl COM registration -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}&quot; /ve /d &quot;ETW Countries API Pane&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\InprocServer32&quot; /ve /d mscoree.dll /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\InprocServer32&quot; /v Class /d JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn.CountriesNow_TaskPane_UserControl /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\InprocServer32&quot; /v Assembly /d &quot;$(AssemblyName), Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\InprocServer32&quot; /v RuntimeVersion /d v4.0.30319 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\InprocServer32&quot; /v ThreadingModel /d Both /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\InprocServer32&quot; /v CodeBase /d &quot;$(TargetPath)&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn.CountriesNow_TaskPane_UserControl&quot; /ve /d &quot;ETW Countries API Pane&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn.CountriesNow_TaskPane_UserControl\CLSID&quot; /ve /d &quot;{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Mark the Countries API pane SafeForScripting + SafeForInitializing so the Office ActiveX host accepts it as CTP content. -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\Implemented Categories\{7DD95802-9882-11CF-9FA9-00AA006C42C4}&quot; /f" ContinueOnError="WarnAndContinue" />
+    <!-- Register as an ActiveX Control (Control subkey + MiscStatus) so the Office CTP host builds an in-place window; regasm writes these, the hand-rolled registration omitted them (pane was created + Visible=true but never rendered). -->
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\Control&quot; /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\MiscStatus&quot; /ve /d 0 /f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="reg add &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}\MiscStatus\1&quot; /ve /d 131473 /f" ContinueOnError="WarnAndContinue" />
+  </Target>
+  <Target Name="UnregisterComAddin" AfterTargets="Clean" Condition=" '$(Configuration)' == 'Debug' ">
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\CLSID\{A6F7A8B9-D0E1-4C34-F012-345678901234}&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn._netF.Addin&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Microsoft\Office\PowerPoint\Addins\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn._netF.Addin&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\CLSID\{A1B2C3D4-E5F6-7890-ABCD-EF0123456706}&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.WinFormsLib.MsPowerPoint_Watcher_UserControl&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\CLSID\{C3D4E5F6-A7B8-7890-ABCD-EF0123456712}&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg delete &quot;HKCU\Software\Classes\JBC.ExploreTheWorld.AL.MsOfficePowerPointVstoAddIn.CountriesNow_TaskPane_UserControl&quot; /f" ContinueOnError="true" />
+  </Target>
+</Project>

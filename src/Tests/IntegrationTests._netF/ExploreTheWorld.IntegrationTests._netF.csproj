@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>JBC.ExploreTheWorld.IntegrationTests._netF</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.IntegrationTests</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <!-- FluentAssertions 6.x is the last series with .NET Framework support. -->
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <!-- EF Core 3.x is the last series with .NET Framework support. Matches DL.CountriesNowSpaceData._netF. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.32" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CL._netF\ExploreTheWorld.CL._netF.csproj" />
+    <ProjectReference Include="..\..\DL._netF\ExploreTheWorld.DL._netF.csproj" />
+    <ProjectReference Include="..\..\DL.CountriesNowSpaceData._netF\ExploreTheWorld.DL.CountriesNowSpaceData._netF.csproj" />
+  </ItemGroup>
+
+  <!--
+    Source is NOT linked from IntegrationTests because the net10.0 fixtures use
+    IDbContextFactory<T> (EF Core 5+) and CreateDbContextAsync(), which are unavailable
+    in EF Core 3.x. Standalone _netF fixtures use Func<ExploreTheWorldDbContext> instead.
+  -->
+
+</Project>

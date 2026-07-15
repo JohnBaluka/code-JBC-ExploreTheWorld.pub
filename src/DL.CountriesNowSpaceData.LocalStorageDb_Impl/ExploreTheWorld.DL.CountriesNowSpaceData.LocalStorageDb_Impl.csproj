@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>JBC.ExploreTheWorld.DL.CountriesNowSpaceData.LocalStorageDb_Impl</AssemblyName>
+    <RootNamespace>JBC.ExploreTheWorld.DL.CountriesNowSpaceData.LocalStorageDb_Impl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- References DL (entity types + repo interface) but NOT DL.CountriesNowSpaceData — no EF Core DbContext needed. -->
+    <ProjectReference Include="..\DL\ExploreTheWorld.DL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.9" />
+  </ItemGroup>
+
+</Project>

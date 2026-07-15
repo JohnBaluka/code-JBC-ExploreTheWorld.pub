@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="WordWebAddIn1/WordWebAddIn1.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="WordWebAddIn1Web/WordWebAddIn1Web.csproj" />
+</Solution>

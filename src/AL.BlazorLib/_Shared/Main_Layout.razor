@@ -1,0 +1,56 @@
+@inherits LayoutComponentBase
+@namespace JBC.ExploreTheWorld.AL.BlazorLib
+
+<PageTitle>@Layout_AppService.AppTitle</PageTitle>
+
+<RadzenLayout>
+    <RadzenHeader>
+        <RadzenStack Style="width:100%;"
+                     Orientation="Orientation.Horizontal"
+                     AlignItems="AlignItems.Center"
+                     Gap="0"
+                     Class="rz-p-2">
+            @if (Layout_AppService.ShowSidebar)
+            {
+                <RadzenSidebarToggle Click="@(() => _sidebarExpanded = !_sidebarExpanded)" />
+            }
+            <RadzenText TextStyle="TextStyle.H6"
+                        Class="rz-m-0 rz-ml-2">
+                        Explore the World
+            </RadzenText>
+            <RadzenBadge id="renderModeBadge"
+                         title="Current Render Mode"
+                         Style="font-size: 11px; margin-left: 0.5rem;"
+                         BadgeStyle="@(RenderModeDisplay == "Server" ? BadgeStyle.Success : BadgeStyle.Info)"
+                         Text="@RenderModeDisplay" />
+            <RadzenBadge id="breakpointBadge"
+                         title="Current Breakpoint"
+                         Style="font-size: 11px;"
+                         BadgeStyle="@GetBreakpointBadgeStyle()"
+                         Text="@_currentBreakpoint" />
+            <RadzenDropDown id="dbProviderSelect"
+                            title="Database Provider"
+                            Style="font-size: 11px; min-width: 90px;"
+                            Value="@_selectedDbProvider"
+                            ValueChanged="@OnDbProviderChanged"
+                            Data="@DropdownProviders"
+                            TValue="string" />
+            <span style="flex:1;" />
+            <RadzenButton Style="font-size:11px;"
+                          Icon="open_in_new"
+                          Text="New Window"
+                          Size="ButtonSize.Small"
+                          ButtonStyle="ButtonStyle.Light"
+                          Click="@OpenNewWindow" />
+        </RadzenStack>
+    </RadzenHeader>
+    @if (Layout_AppService.ShowSidebar)
+    {
+        <RadzenSidebar @bind-Expanded="@_sidebarExpanded">
+            <NavMenu />
+        </RadzenSidebar>
+    }
+    <RadzenBody>
+        @Body
+    </RadzenBody>
+</RadzenLayout>

@@ -1,0 +1,12 @@
+@namespace JBC.ExploreTheWorld.AL.Oqtane.CountriesNow
+@inherits ModuleBase
+
+@* Oqtane panes are auto-height (unlike the web app shell where the page passes height:100%),
+   so give the component an explicit viewport-based height or its flex layout collapses: the
+   grids stop scrolling internally and the whole page scrolls instead, pushing the export log
+   and options off the bottom. Same calc as the CountrySlides module keeps the two consistent. *@
+<CountriesNow__Component Style="height:calc(100vh - 240px);min-height:480px;" />
+
+@code {
+    public override string RenderMode => RenderModes.Interactive;
+}

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp
+          xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+          xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+          xsi:type="TaskPaneApp">
+
+  <Id>F3A4B5C6-D7E8-9F0A-1B2C-3D4E5F6A7B8C</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>John Baluka</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="ETW MsOfficePowerPointBlazorWebAddIn" />
+  <Description DefaultValue="Explore the World PowerPoint Add-in using Blazor Server+WASM hybrid"/>
+  <IconUrl DefaultValue="https://localhost:7102/Images/globe-32.png" />
+  <HighResolutionIconUrl DefaultValue="https://localhost:7102/Images/globe-64.png"/>
+  <SupportUrl DefaultValue="https://github.com/JohnBaluka" />
+  <AppDomains>
+    <AppDomain>AppDomain1</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Presentation" />
+  </Hosts>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="SharedRuntime" MinVersion="1.1"/>
+      <Set Name="PowerPointApi" MinVersion="1.5"/>
+      <Set Name="DialogApi" MinVersion="1.2"/>
+      <Set Name="AddinCommands" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://localhost:7102" />
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Presentation">
+        <Runtimes>
+          <Runtime resid="PSharedUrl" lifetime="long" />
+        </Runtimes>
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="PTitle"/>
+            <Description resid="PDesc"/>
+            <LearnMoreUrl resid="PLearn"/>
+          </GetStarted>
+
+          <FunctionFile resid="PSharedUrl" />
+
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <CustomTab id="ETWPPTBlazorTab">
+              <Group id="ETW.PPT.Blazor.CountriesApiGroup">
+                <Label resid="PCountriesApiGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="PCountries16" />
+                  <bt:Image size="32" resid="PCountries32" />
+                  <bt:Image size="80" resid="PCountries80" />
+                </Icon>
+
+                <Control xsi:type="Button" id="ETW.PPT.Blazor.CountriesApi.Button">
+                  <Label resid="PCountriesApiLabel" />
+                  <Supertip>
+                    <Title resid="PCountriesApiLabel" />
+                    <Description resid="PCountriesApiTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="PCountries16" />
+                    <bt:Image size="32" resid="PCountries32" />
+                    <bt:Image size="80" resid="PCountries80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ETWPPTBlazorTaskpaneID</TaskpaneId>
+                    <SourceLocation resid="PCountriesApiUrl" />
+                  </Action>
+                </Control>
+              </Group>
+
+              <Group id="ETW.PPT.Blazor.WatcherGroup">
+                <Label resid="PWatcherGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="PWatcher16" />
+                  <bt:Image size="32" resid="PWatcher32" />
+                  <bt:Image size="80" resid="PWatcher80" />
+                </Icon>
+
+                <Control xsi:type="Button" id="ETW.PPT.Blazor.Watcher.Button">
+                  <Label resid="PWatcherLabel" />
+                  <Supertip>
+                    <Title resid="PWatcherLabel" />
+                    <Description resid="PWatcherTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="PWatcher16" />
+                    <bt:Image size="32" resid="PWatcher32" />
+                    <bt:Image size="80" resid="PWatcher80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ETWPPTBlazorTaskpaneID</TaskpaneId>
+                    <SourceLocation resid="PEventsUrl" />
+                  </Action>
+                </Control>
+              </Group>
+
+              <Group id="ETW.PPT.Blazor.ExportGroup">
+                <Label resid="PExportGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="PJson16" />
+                  <bt:Image size="32" resid="PJson32" />
+                  <bt:Image size="80" resid="PJson80" />
+                </Icon>
+
+                <Control xsi:type="Button" id="ETW.PPT.Blazor.SaveAsJson.Button">
+                  <Label resid="PSaveAsJsonLabel" />
+                  <Supertip>
+                    <Title resid="PSaveAsJsonLabel" />
+                    <Description resid="PSaveAsJsonTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="PJson16" />
+                    <bt:Image size="32" resid="PJson32" />
+                    <bt:Image size="80" resid="PJson80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ETWPPTBlazorTaskpaneID</TaskpaneId>
+                    <SourceLocation resid="PSaveAsJsonUrl" />
+                  </Action>
+                </Control>
+              </Group>
+              <Label resid="PTabLabel"/>
+            </CustomTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="PCountries16" DefaultValue="https://localhost:7102/Images/globe-16.png" />
+        <bt:Image id="PCountries32" DefaultValue="https://localhost:7102/Images/globe-32.png" />
+        <bt:Image id="PCountries80" DefaultValue="https://localhost:7102/Images/globe-80.png" />
+        <bt:Image id="PWatcher16" DefaultValue="https://localhost:7102/Images/watch-16.png" />
+        <bt:Image id="PWatcher32" DefaultValue="https://localhost:7102/Images/watch-32.png" />
+        <bt:Image id="PWatcher80" DefaultValue="https://localhost:7102/Images/watch-80.png" />
+        <bt:Image id="PJson16" DefaultValue="https://localhost:7102/Images/braces-16.png" />
+        <bt:Image id="PJson32" DefaultValue="https://localhost:7102/Images/braces-32.png" />
+        <bt:Image id="PJson80" DefaultValue="https://localhost:7102/Images/braces-80.png" />
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="PSharedUrl" DefaultValue="https://localhost:7102/" />
+        <bt:Url id="PSaveAsJsonUrl" DefaultValue="https://localhost:7102/save-as-json" />
+        <bt:Url id="PCountriesApiUrl" DefaultValue="https://localhost:7102/countries-now" />
+        <bt:Url id="PEventsUrl" DefaultValue="https://localhost:7102/events" />
+        <bt:Url id="PLearn" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812" />
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="PTitle" DefaultValue="Get started with the Explore the World PowerPoint Add-in!" />
+        <bt:String id="PTabLabel" DefaultValue="ETW (Web)" />
+        <bt:String id="PCountriesApiGroupLabel" DefaultValue="Countries API" />
+        <bt:String id="PWatcherGroupLabel" DefaultValue="Watcher" />
+        <bt:String id="PExportGroupLabel" DefaultValue="Export" />
+        <bt:String id="PSaveAsJsonLabel" DefaultValue="Save as JSON (Blazor)" />
+        <bt:String id="PCountriesApiLabel" DefaultValue="Countries Pane (Blazor)" />
+        <bt:String id="PWatcherLabel" DefaultValue="Watcher Pane (Blazor)" />
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="PDesc" DefaultValue="The Explore the World PowerPoint Add-in loaded. Click a button to open the taskpane." />
+        <bt:String id="PSaveAsJsonTip" DefaultValue="Save the active PowerPoint presentation as JSON" />
+        <bt:String id="PCountriesApiTip" DefaultValue="Open the Countries Now API browser" />
+        <bt:String id="PWatcherTip" DefaultValue="Open the PowerPoint event watcher" />
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+
+</OfficeApp>

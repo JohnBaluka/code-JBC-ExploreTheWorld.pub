@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-ios</TargetFramework>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>JBC.ExploreTheWorld.AL.MauiApp.iOS</RootNamespace>
+    <AssemblyName>JBC.ExploreTheWorld.AL.MauiApp.iOS</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseMaui>true</UseMaui>
+    <MauiXamlInflator>SourceGen</MauiXamlInflator>
+    <EnableDefaultCssItems>false</EnableDefaultCssItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.80" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.80" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AL.MauiLib\ExploreTheWorld.AL.MauiLib.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceApi\ExploreTheWorld.DL.CountriesNowSpaceApi.csproj" />
+    <ProjectReference Include="..\DL.CountriesNowSpaceData.InMemoryDb_Impl\ExploreTheWorld.DL.CountriesNowSpaceData.InMemoryDb_Impl.csproj" />
+  </ItemGroup>
+
+</Project>
