@@ -18,7 +18,7 @@
          Version must match the referenced EF Core version. Update when upgrading EF Core.
          System.Data.OleDb is required on .NET Core/.NET 5+ (removed from BCL). -->
     <PackageReference Include="EntityFrameworkCore.Jet" Version="10.0.1" />
-    <PackageReference Include="System.Data.OleDb" Version="10.0.9" />
+    <PackageReference Include="System.Data.OleDb" Version="10.0.10" />
   </ItemGroup>
 
 </Project>

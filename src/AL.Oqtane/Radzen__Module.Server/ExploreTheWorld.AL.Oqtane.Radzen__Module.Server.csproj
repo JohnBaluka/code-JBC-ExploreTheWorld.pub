@@ -13,7 +13,7 @@
     <ProjectReference Include="..\..\..\oqtane.framework\Oqtane.Shared\Oqtane.Shared.csproj" Private="false" />
     <!-- Radzen__Module.Client gets copied transitively into Oqtane.Server/bin via this Server module. -->
     <ProjectReference Include="..\Radzen__Module.Client\ExploreTheWorld.AL.Oqtane.Radzen__Module.Client.csproj" />
-    <PackageReference Include="Radzen.Blazor" Version="11.1.2" />
+    <PackageReference Include="Radzen.Blazor" Version="11.1.5" />
   </ItemGroup>
 
 </Project>

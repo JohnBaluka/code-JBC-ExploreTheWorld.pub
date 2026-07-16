@@ -16,10 +16,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
-    <PackageReference Include="NetOfficeFw.Core"       Version="1.9.10" />
-    <PackageReference Include="NetOfficeFw.Word"       Version="1.9.10" />
-    <PackageReference Include="NetOfficeFw.Excel"      Version="1.9.10" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
+    <PackageReference Include="NetOfficeFw.Core" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Word" Version="1.9.10" />
+    <PackageReference Include="NetOfficeFw.Excel" Version="1.9.10" />
     <PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.10" />
   </ItemGroup>
 

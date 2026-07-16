@@ -21,7 +21,7 @@
     <PackageReference Include="NetOfficeFw.Excel" Version="1.9.10" />
     <PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.10" />
     <PackageReference Include="NetOfficeFw.Word" Version="1.9.10" />
-    <PackageReference Include="System.Net.Http.Json" Version="10.0.9" />
+    <PackageReference Include="System.Net.Http.Json" Version="10.0.10" />
   </ItemGroup>
 
   <ItemGroup>

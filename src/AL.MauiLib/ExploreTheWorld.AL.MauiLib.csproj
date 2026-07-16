@@ -16,7 +16,7 @@
     <!-- Compile-time only: the platform heads reference this package themselves; excluding the
          build assets here keeps its static web assets from being contributed twice. -->
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.80" ExcludeAssets="build;buildTransitive" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.10" />
   </ItemGroup>
 
   <ItemGroup>

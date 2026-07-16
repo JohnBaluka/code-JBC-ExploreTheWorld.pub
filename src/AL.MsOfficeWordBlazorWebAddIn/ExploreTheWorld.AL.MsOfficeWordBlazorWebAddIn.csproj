@@ -15,8 +15,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AL.MsOfficeWordBlazorWebAddIn.Client\ExploreTheWorld.AL.MsOfficeWordBlazorWebAddIn.Client.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.9" />
-    <PackageReference Include="Radzen.Blazor" Version="11.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.10" />
+    <PackageReference Include="Radzen.Blazor" Version="11.1.5" />
   </ItemGroup>
 
   <ItemGroup>

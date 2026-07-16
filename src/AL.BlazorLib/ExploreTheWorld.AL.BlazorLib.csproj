@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Radzen.Blazor" Version="11.1.2" />
+    <PackageReference Include="Radzen.Blazor" Version="11.1.5" />
     <ProjectReference Include="..\AL\ExploreTheWorld.AL.csproj" />
     <ProjectReference Include="..\BL\ExploreTheWorld.BL.csproj" />
     <ProjectReference Include="..\CL\ExploreTheWorld.CL.csproj" />
@@ -24,9 +24,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="10.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="10.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.10" />
   </ItemGroup>
   
   <ItemGroup>
