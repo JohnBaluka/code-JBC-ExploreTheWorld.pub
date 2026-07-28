@@ -57,9 +57,17 @@
       <_StampTime Condition="Exists('package-lock.json') AND Exists('$(NpmStampFile)')">$([System.IO.File]::GetLastWriteTime('$(NpmStampFile)').Ticks)</_StampTime>
       <NpmRestoreNeeded Condition="'$(_PackageLockTime)' != '' AND '$(_StampTime)' != '' AND $(_PackageLockTime) &gt; $(_StampTime)">true</NpmRestoreNeeded>
     </PropertyGroup>
-    <Message Importance="high" Text="Running npm ci (package-lock.json updated or first build)..." Condition="'$(NpmRestoreNeeded)' == 'true'" />
-    <Exec Command="npm ci" Condition="'$(NpmRestoreNeeded)' == 'true'" ConsoleToMSBuild="true" />
-    <Touch Files="$(NpmStampFile)" AlwaysCreate="true" Condition="'$(NpmRestoreNeeded)' == 'true'" />
+    <!-- npm supplies dev-only tooling (Office.js editor typings); TypeScriptCompileBlocked is true, so the C# build does not consume node_modules. Probe for npm so machines without Node.js still build. -->
+    <Exec Command="npm --version" Condition="'$(NpmRestoreNeeded)' == 'true'" IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low">
+      <Output TaskParameter="ExitCode" PropertyName="_NpmProbeExitCode" />
+    </Exec>
+    <PropertyGroup>
+      <NpmAvailable Condition="'$(_NpmProbeExitCode)' == '0'">true</NpmAvailable>
+    </PropertyGroup>
+    <Warning Text="npm was not found on PATH - skipping 'npm ci'. Install Node.js to restore the Office.js TypeScript typings." Condition="'$(NpmRestoreNeeded)' == 'true' AND '$(NpmAvailable)' != 'true'" />
+    <Message Importance="high" Text="Running npm ci (package-lock.json updated or first build)..." Condition="'$(NpmRestoreNeeded)' == 'true' AND '$(NpmAvailable)' == 'true'" />
+    <Exec Command="npm ci" Condition="'$(NpmRestoreNeeded)' == 'true' AND '$(NpmAvailable)' == 'true'" ConsoleToMSBuild="true" />
+    <Touch Files="$(NpmStampFile)" AlwaysCreate="true" Condition="'$(NpmRestoreNeeded)' == 'true' AND '$(NpmAvailable)' == 'true'" />
     <Message Importance="low" Text="Skipping npm ci - packages are up to date" Condition="'$(NpmRestoreNeeded)' != 'true'" />
   </Target>
 

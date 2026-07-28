@@ -54,6 +54,8 @@ Do not treat README.md as coding instructions unless this file explicitly says s
 
 All `.sln` files and .NET project folders live under `src/`; test projects live under `src/Tests/`.
 
+**Node.js is not a build prerequisite.** The six Office web add-in projects run an `NpmRestore` target for dev-only tooling (add-in debugging/manifest scripts, Office.js editor typings); it probes for npm and skips with a warning when Node.js is absent, so `JBC.ExploreTheWorld.sln` builds without it. Never let that target hard-fail the build — see [docs/project-templates.md](./docs/project-templates.md) → npm Restore Target.
+
 ```powershell
 # All projects
 dotnet build src\JBC.ExploreTheWorld.sln
