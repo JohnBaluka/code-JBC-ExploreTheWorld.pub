@@ -56,6 +56,8 @@ All `.sln` files and .NET project folders live under `src/`; test projects live 
 
 **Node.js is not a build prerequisite.** The six Office web add-in projects run an `NpmRestore` target for dev-only tooling (add-in debugging/manifest scripts, Office.js editor typings); it probes for npm and skips with a warning when Node.js is absent, so `JBC.ExploreTheWorld.sln` builds without it. Never let that target hard-fail the build — see [docs/project-templates.md](./docs/project-templates.md) → npm Restore Target.
 
+**Launching a web add-in** needs a sideloaded manifest, a running server, and the Office app started together — `Scripts\Start-WebAddin.ps1` does all three without Node.js (`npm run start-local` remains the Node equivalent). See [docs/project-templates.md](./docs/project-templates.md) → Launching a web add-in, including the known limitation that the `ETW (Web)` ribbon tab does not appear on Microsoft 365 build 16.0.20228.
+
 ```powershell
 # All projects
 dotnet build src\JBC.ExploreTheWorld.sln
@@ -71,6 +73,10 @@ dotnet build src\AL.BlazorWebApp.ClientOnly\ExploreTheWorld.AL.BlazorWebApp.Clie
 
 # Run all test projects in the prescribed order
 .\Scripts\Run-AllTests.ps1
+
+# Launch an Office web add-in: sideload manifest + start server + open the Office app
+.\Scripts\Start-WebAddin.ps1 -OfficeApp Word          # or Excel / PowerPoint
+.\Scripts\Start-WebAddin.ps1 -OfficeApp Word -Unregister
 
 # Run .NET 10 tests
 dotnet test src\Tests\UnitTests\ExploreTheWorld.UnitTests.csproj
