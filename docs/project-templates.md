@@ -790,6 +790,86 @@ _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Pages/P
 
 **SharedRuntime requirement:** Manifest must use `<Runtime resid="...Shared.Url" lifetime="long">` so `ExecuteFunction` (commands.js) and task pane share the same runtime.
 
+### npm Restore Target (`NpmRestore`) — Node.js is optional
+
+All six Office web add-in projects (`AL.MsOffice{Word|Excel|PowerPoint}BlazorWebAddIn` and their `.Client` siblings) carry an incremental `NpmRestore` target that runs before `BeforeBuild;ResolveReferences` whenever a `package.json` sits next to the csproj. It is stamp-guarded by `node_modules/.package-lock.stamp`, so npm runs only on the first build or after `package-lock.json` changes.
+
+**What npm provides is dev-only tooling — the C# build never consumes `node_modules`:**
+
+| Project | Command | Packages | Used for |
+|---------|---------|----------|----------|
+| Host (`…BlazorWebAddIn`) | `npm install` | `office-addin-debugging`, `office-addin-manifest`, `@types/office-js-preview` | `npm run start-local` / `validate-local` dev scripts |
+| Client (`….Client`) | `npm ci` | `@types/office-js-preview` | Editor IntelliSense for Office.js |
+
+The Client projects set `<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>` and contain no `.ts` source, so the Office.js typings are never needed by a compile.
+
+**Therefore Node.js must not be a hard build prerequisite.** The target probes for npm first and degrades to a warning when it is missing, rather than failing the build:
+
+```xml
+<!-- npm supplies dev-only tooling; the C# build does not consume node_modules. Probe for npm so machines without Node.js still build. -->
+<Exec Command="npm --version" Condition="'$(NpmRestoreNeeded)' == 'true'" IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low">
+  <Output TaskParameter="ExitCode" PropertyName="_NpmProbeExitCode" />
+</Exec>
+<PropertyGroup>
+  <NpmAvailable Condition="'$(_NpmProbeExitCode)' == '0'">true</NpmAvailable>
+</PropertyGroup>
+<Warning Text="npm was not found on PATH - skipping 'npm install'. Install Node.js to restore the Office add-in dev tooling." Condition="'$(NpmRestoreNeeded)' == 'true' AND '$(NpmAvailable)' != 'true'" />
+<Message Importance="high" Text="Running npm install (package-lock.json updated or first build)..." Condition="'$(NpmRestoreNeeded)' == 'true' AND '$(NpmAvailable)' == 'true'" />
+<Exec Command="npm install" Condition="'$(NpmRestoreNeeded)' == 'true' AND '$(NpmAvailable)' == 'true'" ConsoleToMSBuild="true" />
+<Touch Files="$(NpmStampFile)" AlwaysCreate="true" Condition="'$(NpmRestoreNeeded)' == 'true' AND '$(NpmAvailable)' == 'true'" />
+```
+
+Rules when editing this target:
+
+- `IgnoreExitCode="true"` on the probe is required. Without it a missing npm returns `9009` from `cmd.exe` and MSBuild raises `MSB3073` — the very failure the probe exists to prevent.
+- The `Touch` that writes the stamp file must carry the same `NpmAvailable` guard as the `Exec`. Stamping a skipped restore would permanently suppress the restore once Node.js is later installed, and `Touch AlwaysCreate` would fail anyway because `node_modules/` does not exist.
+- Keep the skip a `<Warning>`, not a `<Message>`. The stamp stays unwritten, so the warning repeats on every build — that is deliberate, and it is how a developer who actually needs `npm run start-local` finds out the tooling is missing.
+
+### Launching a web add-in (sideload + server + Office app)
+
+Unlike the VSTO add-ins, a web add-in is not registered by an installer. Running one means four things must happen together: a trusted HTTPS origin, a sideloaded manifest, a running Blazor server, and an Office app started so it reads the sideload entry. Two supported paths:
+
+**1. `Scripts\Start-WebAddin.ps1` (no Node.js required — default)**
+
+```powershell
+.\Scripts\Start-WebAddin.ps1 -OfficeApp Word          # sideload + server + launch Word
+.\Scripts\Start-WebAddin.ps1 -OfficeApp Excel -NoLaunch    # sideload + server only
+.\Scripts\Start-WebAddin.ps1 -OfficeApp PowerPoint -Configuration Release
+.\Scripts\Start-WebAddin.ps1 -OfficeApp Word -Unregister   # remove the sideload entry
+```
+
+The script is Windows PowerShell 5.1 compatible (unlike `Run-AllTests.ps1`, which requires 7.0). It:
+
+1. Checks `dotnet dev-certs https --check --trust` — Office refuses to load a task pane from an untrusted `https` origin.
+2. Writes the sideload entry to `HKCU\Software\Microsoft\Office\16.0\WEF\Developer`: value **name** = the manifest `<Id>` GUID, value **data** = the full path to `Assets\manifest.local.xml`. This is the shape Microsoft documents for a sideloaded add-in, and the same entry `office-addin-debugging` writes.
+3. Starts the add-in exe with `ASPNETCORE_URLS` set to the project's https/http pair, then polls the TCP port until it accepts connections. An already-running server is reused.
+4. Opens the Office app over COM with `Visible = true` (PowerPoint uses `-1`/msoTrue and adds its presentation `WithWindow`, per the Office-automation rule in AGENTS.md) and creates a blank document.
+
+Port pairs are duplicated in three places — keep them in sync:
+
+| Add-in | https | http | `launchSettings.json` | `OfficeWebAddinServerFixture.cs` | `Start-WebAddin.ps1` |
+|--------|-------|------|---|---|---|
+| Word | 7100 | 5100 | ✔ | ✔ | ✔ |
+| Excel | 7101 | 5101 | ✔ | ✔ | ✔ |
+| PowerPoint | 7102 | 5102 | ✔ | ✔ | ✔ |
+
+**2. `npm run start-local` (requires Node.js)**
+
+From the add-in host project folder, `office-addin-debugging start Assets\manifest.local.xml` performs the same steps. Use `npm run validate-local` to schema-check a manifest — the PowerShell script does not validate. `npm run stop` unregisters.
+
+> **Known limitation — `WEF\Developer` sideloading does not work on Microsoft 365 build 16.0.20228.** No `ETW (Web)` tab appears in Word, and no `Wef` cache folder is created for the add-in's GUID.
+>
+> Diagnosed as **not** a defect in this repo's manifests or projects:
+>
+> - Setting `RuntimeLogging` under the same `WEF\Developer` key produces **no log file at all** — Office never reads the key.
+> - A **minimal, known-good diagnostic manifest** (plain `TaskPaneApp`, only `WordApi 1.1`, no `SharedRuntime`, its own GUID) sideloaded alongside the real one **also fails to appear**. This rules out the manifests themselves.
+> - Not requirement sets (`WordApi 1.9` is supported on that build), not Trust Center policy (no blocking policy present), and not the server — all task-pane routes return 200 over a trusted certificate.
+> - `office-addin-debugging` writes the *same* registry entry, so **installing Node.js does not work around it**.
+>
+> Rebuilding the solution has no effect on any of this: `manifest.local.xml` is not a build artifact, and Office reads it directly from `Assets\` via the path in the registry.
+>
+> The documented fallback for Windows desktop is a [network shared-folder catalog](https://learn.microsoft.com/en-us/office/dev/add-ins/testing/create-a-network-shared-folder-catalog-for-task-pane-and-content-add-ins), which needs an SMB share plus a one-time **Insert > My Add-ins > Shared Folder** selection, so it cannot be fully scripted.
+
 ---
 
 ## Test Projects
@@ -883,3 +963,7 @@ All `._netF` test projects use `xunit 2.9.x`, **`FluentAssertions 6.12.0`** (las
 
 ### Issue: Type not accessible across projects
 **Solution:** Add ProjectReference and ensure namespace is correct
+
+### Issue: `error MSB3073: The command "npm install"/"npm ci" exited with code 9009`
+**Cause:** Node.js/npm is not on `PATH`; `9009` is the Windows "command not found" exit code. Only the six Office web add-in projects in `JBC.ExploreTheWorld.sln` run npm.  
+**Solution:** The `NpmRestore` target probes npm and skips with a warning when it is absent — see [npm Restore Target](#npm-restore-target-npmrestore--nodejs-is-optional). If you hit this error, the probe is missing from that project's target (or lost its `IgnoreExitCode="true"`); restore it rather than installing Node.js just to build. Install Node.js only if you need `npm run start-local` / `validate-local`.
